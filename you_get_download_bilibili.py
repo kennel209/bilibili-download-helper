@@ -95,7 +95,7 @@ def do_work(args):
 def main():
     u'''解析命令行参数'''
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=u"A small script to help downloading Bilibily video via you-get & aria2")
     parser.add_argument("baseurl", 
                         help="bash to generate bilibili urls")
     parser.add_argument("-i","--range", 

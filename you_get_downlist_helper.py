@@ -18,7 +18,7 @@ def handle_url(args,func=print):
 
 def main():
     u'''解析命令行'''
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=u"A small script to generate Sequential URLS")
     parser.add_argument("baseurl", help="baseurl to build URLS")
     parser.add_argument("index", help="range to generate, 1 to index", type=int)
     parser.add_argument("-p","--pattern", default="index_{:02d}.html",help="python format pattern. Default: 'index_{:02d}.html'")
