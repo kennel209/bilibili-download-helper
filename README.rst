@@ -1,7 +1,7 @@
 .. -*- coding: utf-8 -*-
 
 ===========================================
-you-get-downloader-help
+you-get-downloader-helper
 ===========================================
 
 :Author: Eric Cai
@@ -20,6 +20,7 @@ python3.4 -_-b
 ============
 
 * 为了方便使用多线程下载（ aria2 ）预设10段10线程(-x 10 -s 10)
+* 单线程也可使用wget
 * 批量下载bilibili多P
 * 暂时不支持单P多分段下载
 
@@ -61,7 +62,7 @@ TODO
       -o PREFIX, --prefix PREFIX
                             output filename prefix
       -d DOWNLOADER, --downloader DOWNLOADER
-                            external downloader, default Aria2
+                            external downloader, default aria2. [aria2,wget,fake]
       -f, --fixed-prefix    fixed filename, do not use index to auto rename. NO
                             effect if prefix NOT set
       -n, --dry-run         just print info, do not actually downdloading

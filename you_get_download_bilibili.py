@@ -78,7 +78,7 @@ def main():
                         help="output filename prefix")
     parser.add_argument("-d","--downloader", 
                         default="aria2", 
-                        help="external downloader, default Aria2")
+                        help="external downloader, default aria2, [aria2,wget,fake]")
     parser.add_argument("-f","--fixed-prefix", 
                         action="store_true", 
                         help="fixed filename, do not use index to auto rename. NO effect if prefix NOT set")

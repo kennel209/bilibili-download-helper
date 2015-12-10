@@ -44,8 +44,21 @@ class Aria2_Downloader(Downloader):
         # TODO 异常处理
         subprocess.call(args)
 
+class Wget_Downloader(Downloader):
+    u'''wget下载器，通过subprocess模块调用'''
+    @staticmethod
+    def download(url, filename, options="-c"):
+        # TODO 解析OPTIONS
+        cmd = " ".join(["wget",options,"-O"])
+        cmd = " ".join([cmd,shlex.quote(filename),shlex.quote(url)])
+        args = shlex.split(cmd)
+        debug("Downloading (wget) {}".format(cmd))
+        # TODO 异常处理
+        subprocess.call(args)
+
 DOWNLOADERS={"fake":Fake_Downloader,
             "aria2":Aria2_Downloader,
+            "wget":Wget_Downloader,
             }
 
 if __name__=="__main__":
