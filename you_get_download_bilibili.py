@@ -15,7 +15,14 @@ def debug(s,out=sys.stdout):
     '''common DEBUG function, depend on Glogal DEBUG'''
     if DEBUG:
         print("DEBUG: {!s}".format(s),file=out)
-        
+
+def set_debug(flag):
+    '''SET DEBUG flag recursively'''
+    global DEBUG
+    DEBUG = flag
+    you_get_json_handler.set_debug(flag)
+    you_get_downloader.set_debug(flag)
+
 def extract_index(s,regex=r"index_(\d+)"):
     u'''获取自动命名index'''
     pattern = re.compile(regex)
@@ -25,10 +32,16 @@ def extract_index(s,regex=r"index_(\d+)"):
     print("ERROR in extract INDEX, EXIT")
     sys.exit(1)
 
-def do_work(args,info_extract=print,downloader=None):
+def download(baseurl,
+            range=1,
+            start=1,
+            name_prefix="",
+            info_extract=you_get_json_handler.handler,
+            downloader=you_get_downloader.Aria2_Downloader,
+            fixed_prefix=False,
+            dry_run=False):
     u'''主函数，批量生成url，使用下载器下载'''
-    url_gen = generate_urls(args.baseurl,args.range,args.start)
-    name_prefix = args.prefix
+    url_gen = generate_urls(baseurl,range,start)
     for url in url_gen:
         info = info_extract(url)
         
@@ -37,34 +50,54 @@ def do_work(args,info_extract=print,downloader=None):
         index = extract_index(url)
         if name_prefix == "":
             filename = index
-        elif args.fixed_prefix:
+        elif fixed_prefix:
             filename = name_prefix
         else:
             filename = "_".join([name_prefix,index])
         file_name = ".".join([filename,ext])
-        debug("{} -> {}".format(url,file_name))
+        #debug("{} -> {}".format(url,file_name))
+        print("{} -> {}".format(url,file_name))
+        debug("Split URL part: {}".format(len(info[0])))
 
-        # 模拟执行，展示信息
-        if args.dry_run:
-            debug(info)
-            print("{} -> {}".format(url,file_name))
+        if dry_run:
+            #debug(info)
+            print("Split URL part: {}".format(len(info[0])))
             continue
 
+        # 模拟执行，展示信息
         #debug(info)
         # TODO 单P多分段支持
         if len(info[0]) != 1:
-            print("NOT IMPLENTED MultiURL part")
+            print("Split URL part: {}".format(len(info[0])))
+            print("NOT IMPLENTED Multi URL part")
             sys.exit(1)
             raise NotImplemented
 
         downloader.download(info[0][0],filename=file_name)
             
+def do_work(args):
+    u'''分配命令，调用下载主函数'''
+
+    # url采集函数和下载器
+    extractor = you_get_json_handler.handler
+    downloader = you_get_downloader.DOWNLOADERS[args.downloader]
+
+    download(args.baseurl,
+            range=args.range,
+            start=args.start,
+            name_prefix=args.prefix,
+            info_extract=extractor,
+            downloader=downloader,
+            fixed_prefix=args.fixed_prefix,
+            dry_run=args.dry_run)
+
+
 def main():
     u'''解析命令行参数'''
 
     parser = argparse.ArgumentParser()
     parser.add_argument("baseurl", 
-                        help="bash to generate bilibi urls")
+                        help="bash to generate bilibili urls")
     parser.add_argument("-i","--range", 
                         type=int, 
                         default=1,
@@ -92,18 +125,9 @@ def main():
     args = parser.parse_args()
 
     # 调试模式全局变量
-    global DEBUG
-    DEBUG = args.verbose
-    you_get_json_handler.DEBUG = args.verbose
-    you_get_downloader.DEBUG = args.verbose
-    
+    set_debug( args.verbose)
     debug(args)
-
-    # url采集函数和下载器
-    extractor = you_get_json_handler.handler
-    downloader = you_get_downloader.DOWNLOADERS[args.downloader]
-
-    do_work(args,extractor,downloader)
+    do_work(args)
     
 
 if __name__=="__main__":

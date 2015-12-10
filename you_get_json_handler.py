@@ -13,6 +13,11 @@ def debug(s,out=sys.stdout):
     if DEBUG:
         print("DEBUG: {!s}".format(s),file=out)
 
+def set_debug(flag):
+    '''SET DEBUG flag recursively'''
+    global DEBUG
+    DEBUG = flag
+
 def handler(url):
     u'''打包处理函数'''
     data = handler_command(url)

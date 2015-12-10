@@ -14,6 +14,11 @@ def debug(s,out=sys.stdout):
     if DEBUG:
         print("DEBUG: {!s}".format(s),file=out)
 
+def set_debug(flag):
+    '''SET DEBUG flag recursively'''
+    global DEBUG
+    DEBUG = flag
+
 class Downloader():
     '''abstract class for Downloader'''
     def __init__(self, url="", filename="", *args, **kwargs):
