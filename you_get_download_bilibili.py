@@ -7,6 +7,7 @@ import argparse
 from you_get_downlist_helper import generate_urls
 import you_get_json_handler
 import you_get_downloader
+from video_process import merge_video
 import re
 
 DEBUG=False
@@ -55,25 +56,44 @@ def download(baseurl,
         else:
             filename = "_".join([name_prefix,index])
         file_name = ".".join([filename,ext])
-        #debug("{} -> {}".format(url,file_name))
+
         print("{} -> {}".format(url,file_name))
-        debug("Split URL part: {}".format(len(info[0])))
+        print("Split URL part: {}".format(len(info[0])))
 
-        if dry_run:
-            #debug(info)
-            print("Split URL part: {}".format(len(info[0])))
-            continue
+        if len(info[0]) >= 1:
+            # 多分段
+            parts=[]
+            for part,part_url in enumerate(info[0]):
+                part_index = "[{:02d}]".format(part)
+                part_name = ".".join([filename,part_index,ext])
+                parts.append(part_name)
 
-        # 模拟执行，展示信息
-        #debug(info)
-        # TODO 单P多分段支持
-        if len(info[0]) != 1:
-            print("Split URL part: {}".format(len(info[0])))
-            print("NOT IMPLENTED Multi URL part")
-            sys.exit(1)
-            raise NotImplemented
+                if dry_run:
+                    print("URL part: {} -> {}".format(part_index,part_name))
+                    continue
 
-        downloader.download(info[0][0],filename=file_name)
+                debug("URL part: {} -> {}".format(part_url,part_name))
+                downloader.download(part_url,filename=part_name)
+
+            if dry_run:
+                print("Try Merging: {}".format(file_name))
+                continue
+
+            debug("Try Merging: {}".format(file_name))
+
+            result = merge_video(ext,parts,file_name)
+            
+            # successful merged, delete parts_file
+            if result:
+                for f in parts:
+                    os.remove(f)
+
+        else:
+            # 单分段
+            if dry_run:
+                continue
+
+            downloader.download(info[0][0],filename=file_name)
             
 def do_work(args):
     u'''分配命令，调用下载主函数'''
