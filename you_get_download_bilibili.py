@@ -60,7 +60,7 @@ def download(baseurl,
         print("{} -> {}".format(url,file_name))
         print("Split URL part: {}".format(len(info[0])))
 
-        if len(info[0]) >= 1:
+        if len(info[0]) > 1:
             # 多分段
             parts=[]
             for part,part_url in enumerate(info[0]):

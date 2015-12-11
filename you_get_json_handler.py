@@ -5,6 +5,7 @@ import subprocess as sb
 import json
 import shlex
 import sys
+from utils import check_cmd
 
 DEBUG=False
 
@@ -20,6 +21,12 @@ def set_debug(flag):
 
 def handler(url):
     u'''打包处理函数'''
+    
+    # check command
+    if not check_cmd('you-get'):
+        print("Cannot found you-get in Path")
+        sys.exit(1)
+
     data = handler_command(url)
     obj = handler_json(data)
     info = extract_urls(obj)
@@ -31,10 +38,10 @@ def handler_command(url, encoding="utf8"):
     args = shlex.split(cmd)
     debug(args)
     # return output data. -> b'string'
-    # 如果下载超时（20s）报错退出
+    # 如果下载超时（60s）报错退出
     # TODO 更好的修正下载
     try:
-        data = sb.check_output(args,timeout=20)
+        data = sb.check_output(args,timeout=60)
     except sb.TimeoutExpired as err:
         print("command run timeout")
         print(err)

@@ -6,6 +6,7 @@ you-get-downloader-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
+:Version: 0.1
 :License: GPL 3
 
 这是什么？
@@ -15,9 +16,10 @@ you_get_download_bilibili.py
 只是一个使用 ``you-get`` 和 ``aria2`` 下载的包装器。
 
 你需要保证路径中可以使用 ``you-get`` 和 ``aria2c`` 来使用这个脚本。
-为了支持分段合并，你同样需要 ``ffmpeg`` 来使用这个脚本。
 
-python3.4 -_-b
+为了支持分段合并，你同样需要 ``ffmpeg`` 或者 ``avconv`` 来使用这个脚本。
+
+当然还有 ``python3.4`` -_-b
 
 特性
 ------------
@@ -25,12 +27,11 @@ python3.4 -_-b
 * 为了方便使用多线程下载（ aria2 ）预设10段10线程(-x 10 -s 10)
 * 单线程也可使用wget
 * 批量下载bilibili多P
-* 通过 ``ffmpeg`` 支持合并多段（暂时支持合并flv）
+* 通过 libav 支持合并多段（暂时支持合并flv）
 
 TODO
 ------------
 
-* 自动命令判断 ffmpeg or avconv or failure
 * 更多合并格式
 * 更多option支持
 * 自动编码转换 flv -> mp4

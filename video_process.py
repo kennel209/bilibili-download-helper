@@ -7,6 +7,8 @@ import os
 import subprocess
 import shlex
 
+from utils import check_cmd
+
 DEBUG=False
 
 def debug(s,out=sys.stdout):
@@ -29,10 +31,15 @@ def make_merge_filelist(parts,outfile='temp.merge'):
 
     return outfile
 
-def merge_flv(video_parts,output):
+def merge_flv(cli,video_parts,output):
     u'''use ffmpeg to merge flv video'''
+
+    if not cli:
+        return False
+
     tempfile = make_merge_filelist(video_parts,output+".merge")
-    cmd =  " ".join(["ffmpeg -f concat -i", 
+    cmd =  " ".join([cli,
+                    "-f concat -i", 
                     shlex.quote(tempfile),
                     "-c copy",
                     shlex.quote(output)])
@@ -47,15 +54,24 @@ def merge_flv(video_parts,output):
 
 def merge_video(ext,video_parts,output):
     u'''wrapper function to dispatch'''
+
+    if check_cmd('ffmpeg'):
+        cli = 'ffmpeg'
+    elif check_cmd('avconv'):
+        cli = 'avconv'
+    else:
+        print("NO FFmpeg or Avconv Found, skip")
+        return False
+
     if "flv" == ext:
-        return merge_flv(video_parts,output)
+        return merge_flv(cli,video_parts,output)
     else:
         print("Ext format NOT support now, skip")
         return False
 
 if __name__ == "__main__":
     set_debug(True)
-    parts = ['【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[00].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[01].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[02].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[03].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[04].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[05].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[06].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[07].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[08].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[09].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[10].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[11].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[12].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[13].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[14].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[15].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[16].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[17].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[18].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[19].flv']
+    parts = ['【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[00].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[01].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[02].flv', '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.[03].flv']
     output = '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.flv'
     merge_video("flv",parts,output)
 

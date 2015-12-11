@@ -7,6 +7,8 @@ import os
 import subprocess
 import shlex
 
+from utils import check_cmd
+
 DEBUG=False
 
 def debug(s,out=sys.stdout):
@@ -41,6 +43,13 @@ class Aria2_Downloader(Downloader):
     u'''aria2下载器，通过subprocess模块调用'''
     @staticmethod
     def download(url, filename, options="-x 10 -s 10 -c --auto-file-renaming=false --daemon=false"):
+
+        # check command
+        if not check_cmd('aria2c'):
+            print("Cannot found aria2c in Path")
+            print("Use wget or you-get directly")
+            sys.exit(1)
+
         # TODO 解析OPTIONS
         cmd = " ".join(["aria2c",options,"--out"])
         cmd = " ".join([cmd,shlex.quote(filename),shlex.quote(url)])
@@ -53,6 +62,13 @@ class Wget_Downloader(Downloader):
     u'''wget下载器，通过subprocess模块调用'''
     @staticmethod
     def download(url, filename, options="-c"):
+
+        # check command
+        if not check_cmd('wget'):
+            print("Cannot found wget in Path")
+            print("Use you-get directly")
+            sys.exit(1)
+
         # TODO 解析OPTIONS
         cmd = " ".join(["wget",options,"-O"])
         cmd = " ".join([cmd,shlex.quote(filename),shlex.quote(url)])
