@@ -7,7 +7,7 @@ import os
 import subprocess
 import shlex
 
-from utils import check_cmd
+from .utils import check_cmd
 
 DEBUG=False
 
@@ -49,6 +49,12 @@ class Aria2_Downloader(Downloader):
             print("Cannot found aria2c in Path")
             print("Use wget or you-get directly")
             sys.exit(1)
+
+        # suppress verbose output
+        if not DEBUG:
+            options = " ".join([options,
+                                "--console-log-level=error",
+                                "--summary-interval=0"])
 
         # TODO 解析OPTIONS
         cmd = " ".join(["aria2c",options,"--out"])

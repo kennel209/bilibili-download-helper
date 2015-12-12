@@ -5,7 +5,7 @@ import subprocess as sb
 import json
 import shlex
 import sys
-from utils import check_cmd
+from .utils import check_cmd
 
 DEBUG=False
 

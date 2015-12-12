@@ -7,7 +7,7 @@ import os
 import subprocess
 import shlex
 
-from utils import check_cmd
+from .utils import check_cmd
 
 DEBUG=False
 
@@ -37,8 +37,15 @@ def merge_flv(cli,video_parts,output):
     if not cli:
         return False
 
+    # suppress FFmpeg info
+    if not DEBUG:
+        LOGLEVEL = '-loglevel quiet'
+    else:
+        LOGLEVEL = ''
+
     tempfile = make_merge_filelist(video_parts,output+".merge")
     cmd =  " ".join([cli,
+                    LOGLEVEL,
                     "-f concat -i", 
                     shlex.quote(tempfile),
                     "-c copy",

@@ -73,7 +73,11 @@ def extract_info(data):
     return title,index
         
 def do_work(args):
-    url = args.baseurl
+    u'''args dispatch'''
+    download(args.baseurl,args.dry_run)
+
+def download(baseurl,dry_run):
+    url = baseurl
     data = get_url(url)
     title,index = extract_info(data)
     fixed_prefix = True if index == 1 else False
@@ -83,7 +87,7 @@ def do_work(args):
                                         range=index,
                                         name_prefix=title,
                                         fixed_prefix=fixed_prefix,
-                                        dry_run=args.dry_run)
+                                        dry_run=dry_run)
 
 def main():
     u'''解析命令行参数'''

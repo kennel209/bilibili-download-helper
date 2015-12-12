@@ -4,10 +4,10 @@
 import sys
 import os
 import argparse
-from you_get_downlist_helper import generate_urls
-import you_get_json_handler
-import you_get_downloader
-from video_process import merge_video
+from helpers.url_generater import generate_urls
+from helpers import you_get_json_handler
+from helpers import downloaders as you_get_downloader
+from helpers.video_process import merge_video
 import re
 
 DEBUG=False
@@ -68,18 +68,16 @@ def download(baseurl,
                 part_name = ".".join([filename,part_index,ext])
                 parts.append(part_name)
 
+                print("URL part: {} -> {}".format(part_index,part_name))
                 if dry_run:
-                    print("URL part: {} -> {}".format(part_index,part_name))
                     continue
 
-                debug("URL part: {} -> {}".format(part_url,part_name))
                 downloader.download(part_url,filename=part_name)
 
-            if dry_run:
-                print("Try Merging: {}".format(file_name))
-                continue
+            print("Try Merging: {}".format(file_name))
 
-            debug("Try Merging: {}".format(file_name))
+            if dry_run:
+                continue
 
             result = merge_video(ext,parts,file_name)
             
