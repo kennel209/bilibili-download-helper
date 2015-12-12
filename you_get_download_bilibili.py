@@ -57,8 +57,12 @@ def download(baseurl,
             filename = "_".join([name_prefix,index])
         file_name = ".".join([filename,ext])
 
+        # print INFO
+        print("-"*40)
         print("{} -> {}".format(url,file_name))
         print("Split URL part: {}".format(len(info[0])))
+        print("-"*40)
+        print("")
 
         if len(info[0]) > 1:
             # 多分段
@@ -92,6 +96,13 @@ def download(baseurl,
                 continue
 
             downloader.download(info[0][0],filename=file_name)
+
+        # print INFO
+        print("")
+        print("-"*40)
+        print("Done: {}".format(file_name))
+        print("-"*40)
+        print("")
             
 def do_work(args):
     u'''分配命令，调用下载主函数'''

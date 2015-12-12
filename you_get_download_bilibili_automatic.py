@@ -77,12 +77,19 @@ def do_work(args):
     download(args.baseurl,args.dry_run)
 
 def download(baseurl,dry_run):
+    u'''use core downloader'''
     url = baseurl
     data = get_url(url)
     title,index = extract_info(data)
     fixed_prefix = True if index == 1 else False
+
+    # print INFO
+    print("-"*40)
     print("Title: {}".format(title))
     print("Parts: {}".format(index))
+    print("-"*40)
+    print("")
+
     you_get_download_bilibili.download(url,
                                         range=index,
                                         name_prefix=title,
