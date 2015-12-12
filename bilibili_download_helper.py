@@ -4,12 +4,14 @@
 import sys
 import os
 import argparse
-from helpers.url_generater import generate_urls
-from helpers import you_get_json_handler
+from helpers.url_generater import generate_urls, get_url_index
 from helpers import downloaders as you_get_downloader
 from helpers import bilibili_info_extractor
 from helpers.video_process import merge_video
-import re
+try:
+    from helpers import youtube_dl_handler as url_handler
+except ImportError:
+    from helpers import you_get_json_handler as url_handler
 
 DEBUG=False
 
@@ -22,23 +24,14 @@ def set_debug(flag):
     '''SET DEBUG flag recursively'''
     global DEBUG
     DEBUG = flag
-    you_get_json_handler.set_debug(flag)
+    url_handler.set_debug(flag)
     you_get_downloader.set_debug(flag)
-
-def extract_index(s,regex=r"index_(\d+)"):
-    u'''获取自动命名index'''
-    pattern = re.compile(regex)
-    res = pattern.search(s)
-    if res is not None:
-        return res.group(1)
-    print("ERROR in extract INDEX, EXIT")
-    sys.exit(1)
 
 def download(baseurl,
             range_=0,
             start=0,
             name_prefix="",
-            info_extract=you_get_json_handler.handler,
+            info_extract=url_handler.handler,
             downloader=you_get_downloader.Aria2_Downloader,
             dry_run=False,
             to_ext='mp4'):
@@ -60,7 +53,11 @@ def download(baseurl,
 
         # 根据不同情况生成文件名
         ext = info[1]
-        index = extract_index(url)
+        index = get_url_index(url)
+        if index is None:
+            print("ERROR in extract INDEX, EXIT")
+            sys.exit(1)
+
         if name_prefix == "":
             filename = index
         elif fixed_prefix:
@@ -155,7 +152,7 @@ def do_work(args):
     u'''分配命令，调用下载主函数'''
 
     # url采集函数和下载器
-    extractor = you_get_json_handler.handler
+    extractor = url_handler.handler
     downloader = you_get_downloader.DOWNLOADERS[args.downloader]
 
     if args.auto:

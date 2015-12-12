@@ -4,12 +4,21 @@
 import sys
 import os
 import argparse
+import re
 from urllib.parse import *
 
 def generate_urls(baseurl,indexs,index_modify=1,path_pattern="index_{:02d}.html"):
     u'''生成url播放列表'''
     for i in range(indexs):
         yield urljoin(baseurl,path_pattern.format(i+index_modify))
+
+def get_url_index(s,regex=r"index_(\d+)"):
+    u'''获取自动命名index'''
+    pattern = re.compile(regex)
+    res = pattern.search(s)
+    if res is not None:
+        return res.group(1)
+    return None
 
 def handle_url(args,func=print):
     urlgen = generate_urls(args.baseurl, args.index, args.modify, args.pattern)
