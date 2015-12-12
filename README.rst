@@ -95,41 +95,9 @@ TODO
 
     http://www.bilibili.com/video/av2149245/index_02.html -> Animelo Summer LIVE.flv
 
-
-另一个傻瓜脚本
-================
-
-you_get_download_bilibili_automatic.py 自动化了获取title和index过程，直接下载
-
-用法
-------------
-
 .. code:: console
 
-    $ ./you_get_download_bilibili_automatic.py URL
-
-    # help
-    $ ./you_get_download_bilibili_automatic.py -h
-
-    usage: you_get_download_bilibili_automatic.py [-h] [-n] [-v] baseurl
-
-    Bilibili One URL automatic Downloader Via you-get & aria2
-
-    positional arguments:
-      baseurl        bash to generate bilibili urls
-
-    optional arguments:
-      -h, --help     show this help message and exit
-      -n, --dry-run  just print info, do not actually downdloading
-      -v, --verbose  more info
-
-
-用法例子
------------
-
-.. code:: console
-
-    $ ./you_get_download_bilibili_automatic.py http://www.bilibili.com/video/av1242782/
+    $ ./you_get_download_bilibili.py -a http://www.bilibili.com/video/av1242782/
 
     Title: 【Vmoe字幕组】LiSA LiVE is Smile Always in武道馆
     Parts: 5

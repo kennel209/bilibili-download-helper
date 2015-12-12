@@ -7,6 +7,7 @@ import argparse
 from helpers.url_generater import generate_urls
 from helpers import you_get_json_handler
 from helpers import downloaders as you_get_downloader
+from helpers import bilibili_info_extractor
 from helpers.video_process import merge_video
 import re
 
@@ -34,16 +35,26 @@ def extract_index(s,regex=r"index_(\d+)"):
     sys.exit(1)
 
 def download(baseurl,
-            range=1,
-            start=1,
+            range_=0,
+            start=0,
             name_prefix="",
             info_extract=you_get_json_handler.handler,
             downloader=you_get_downloader.Aria2_Downloader,
-            fixed_prefix=False,
             dry_run=False,
             to_ext='mp4'):
     u'''主函数，批量生成url，使用下载器下载'''
-    url_gen = generate_urls(baseurl,range,start)
+
+    # correct start
+    if start <= 0:
+        start = 1
+
+    if range_ <= 0:
+        fixed_prefix = True
+        range_ = 1
+    else:
+        fixed_prefix = False
+
+    url_gen = generate_urls(baseurl,range_,start)
     for url in url_gen:
         info = info_extract(url)
 
@@ -147,15 +158,45 @@ def do_work(args):
     extractor = you_get_json_handler.handler
     downloader = you_get_downloader.DOWNLOADERS[args.downloader]
 
-    download(args.baseurl,
-            range=args.range,
-            start=args.start,
-            name_prefix=args.prefix,
-            info_extract=extractor,
-            downloader=downloader,
-            fixed_prefix=args.fixed_prefix,
-            dry_run=args.dry_run,
-            to_ext=args.to_ext)
+    if args.auto:
+        # auto mode
+        title,index = bilibili_info_extractor.extract_info(args.baseurl)
+
+        # print INFO
+        print("-"*40)
+        print("Title: {}".format(title))
+        print("Parts: {}".format(1 if index == 0 else index))
+        print("-"*40)
+        print("")
+
+        # add start selector
+        if index == 0:
+            # do not worry about single part
+            range_ = index
+            start = 1
+        else: 
+            start = args.start
+            range_ = index-start+1
+
+        download(args.baseurl,
+                range_=range_,
+                start=start,
+                name_prefix=title,
+                info_extract=extractor,
+                downloader=downloader,
+                dry_run=args.dry_run,
+                to_ext=args.to_ext)
+
+    else:
+        # normal mode
+        download(args.baseurl,
+                range_=args.range,
+                start=args.start,
+                name_prefix=args.prefix,
+                info_extract=extractor,
+                downloader=downloader,
+                dry_run=args.dry_run,
+                to_ext=args.to_ext)
 
 
 def main():
@@ -164,10 +205,13 @@ def main():
     parser = argparse.ArgumentParser(description=u"A small script to help downloading Bilibily video via you-get & aria2")
     parser.add_argument("baseurl",
                         help="bash to generate bilibili urls")
+    parser.add_argument("-a","--auto",
+                        action="store_true",
+                        help="automatic download all")
     parser.add_argument("-i","--range",
                         type=int,
-                        default=1,
-                        help="range to generate, 1 to index")
+                        default=0,
+                        help="range to generate, 1 to index, 0 for current, no auto naming, default 0")
     parser.add_argument("-s","--start",
                         type=int,
                         default=1,
@@ -175,15 +219,12 @@ def main():
     parser.add_argument("-o","--prefix",
                         default="",
                         help="output filename prefix")
-    parser.add_argument("-d","--downloader",
-                        default="aria2",
-                        help="external downloader, default aria2, [aria2,wget,fake]")
-    parser.add_argument("-f","--fixed-prefix",
-                        action="store_true",
-                        help="fixed filename, do not use index to auto rename. NO effect if prefix NOT set")
     parser.add_argument("-t","--to-ext",
                         default="mp4",
                         help="output file extension, auto converted, default mp4")
+    parser.add_argument("-d","--downloader",
+                        default="aria2",
+                        help="external downloader, default aria2, [aria2,wget,fake]")
     parser.add_argument("-n","--dry-run",
                         action="store_true",
                         help="just print info, do not actually downdloading")
@@ -192,6 +233,9 @@ def main():
                         help="more info")
 
     args = parser.parse_args()
+
+    assert args.start >= 1
+    assert args.range >= 0
 
     # 调试模式全局变量
     set_debug( args.verbose)

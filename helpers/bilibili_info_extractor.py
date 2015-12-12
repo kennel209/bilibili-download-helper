@@ -6,10 +6,8 @@ import os
 from urllib.request import urlopen
 from urllib.error import URLError
 from html import unescape
-import argparse
 import gzip
 import re
-import you_get_download_bilibili
 
 DEBUG=False
 
@@ -22,7 +20,6 @@ def set_debug(flag):
     '''SET DEBUG flag recursively'''
     global DEBUG
     DEBUG = flag
-    you_get_download_bilibili.set_debug(flag)
 
 def get_url(url,encoding='utf-8'):
     u'''urlopen to getdata'''
@@ -46,7 +43,7 @@ def get_url(url,encoding='utf-8'):
         print(err)
         sys.exit(1)
 
-def extract_info(data):
+def extract_bilibili(data):
     u'''使用re解析html，获取title和index'''
 
     title = ""
@@ -59,64 +56,24 @@ def extract_info(data):
         title = unescape(title.strip())
     debug(title)
 
-    index = 1
+    index = 0
     # 非贪婪搜索
     text_pattern = re.compile(r'<div id="plist">(.*?)</div>',re.S)
     text_match = text_pattern.search(data)
     if text_match:
         #debug(text_match.groups())
         index = text_match.group(1).count(r"<option")
-    if index == 0:
-        index = 1
     debug(index)
 
     return title,index
 
-def do_work(args):
-    u'''args dispatch'''
-    download(args.baseurl,args.dry_run)
-
-def download(baseurl,dry_run):
-    u'''use core downloader'''
-    url = baseurl
+def extract_info(url):
+    u'''info extract wrapper'''
     data = get_url(url)
-    title,index = extract_info(data)
-    fixed_prefix = True if index == 1 else False
+    title,index = extract_bilibili(data)
 
-    # print INFO
-    print("-"*40)
-    print("Title: {}".format(title))
-    print("Parts: {}".format(index))
-    print("-"*40)
-    print("")
-
-    you_get_download_bilibili.download(url,
-                                        range=index,
-                                        name_prefix=title,
-                                        fixed_prefix=fixed_prefix,
-                                        dry_run=dry_run)
-
-def main():
-    u'''解析命令行参数'''
-
-    parser = argparse.ArgumentParser(description=u'''Bilibili One URL automatic Downloader Via you-get & aria2''')
-    parser.add_argument("baseurl",
-                        help="bash to generate bilibili urls")
-    parser.add_argument("-n","--dry-run",
-                        action="store_true",
-                        help="just print info, do not actually downdloading")
-    parser.add_argument("-v","--verbose",
-                        action="store_true",
-                        help="more info")
-
-    args = parser.parse_args()
-
-    # 调试模式全局变量
-    set_debug(args.verbose)
-    debug(args)
-    do_work(args)
-
+    return title,index
 
 if __name__=="__main__":
-    main()
+    pass
 
