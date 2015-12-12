@@ -66,6 +66,13 @@ def download(baseurl,
 
         if len(info[0]) > 1:
             # 多分段
+
+            # check if file existed
+            # treat as downloaded
+            if os.path.exists(file_name):
+                print("{} has downloaded, skip".format(file_name))
+                continue
+            
             parts=[]
             for part,part_url in enumerate(info[0]):
                 part_index = "[{:02d}]".format(part)
@@ -92,6 +99,8 @@ def download(baseurl,
 
         else:
             # 单分段
+
+            # TODO file duplication leave to external_downloader
             if dry_run:
                 continue
 
