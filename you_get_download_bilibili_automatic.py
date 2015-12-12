@@ -71,7 +71,7 @@ def extract_info(data):
     debug(index)
 
     return title,index
-        
+
 def do_work(args):
     u'''args dispatch'''
     download(args.baseurl,args.dry_run)
@@ -100,15 +100,15 @@ def main():
     u'''解析命令行参数'''
 
     parser = argparse.ArgumentParser(description=u'''Bilibili One URL automatic Downloader Via you-get & aria2''')
-    parser.add_argument("baseurl", 
+    parser.add_argument("baseurl",
                         help="bash to generate bilibili urls")
-    parser.add_argument("-n","--dry-run", 
-                        action="store_true", 
+    parser.add_argument("-n","--dry-run",
+                        action="store_true",
                         help="just print info, do not actually downdloading")
-    parser.add_argument("-v","--verbose", 
-                        action="store_true", 
+    parser.add_argument("-v","--verbose",
+                        action="store_true",
                         help="more info")
-    
+
     args = parser.parse_args()
 
     # 调试模式全局变量
@@ -116,7 +116,7 @@ def main():
     debug(args)
     do_work(args)
 
-    
+
 if __name__=="__main__":
     main()
 

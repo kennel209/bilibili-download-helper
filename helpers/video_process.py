@@ -31,7 +31,7 @@ def make_merge_filelist(parts,outfile='temp.merge'):
 
     return outfile
 
-def merge_flv(cli,video_parts,output):
+def merge_flv(cli,video_parts,output,to_ext='flv'):
     u'''use ffmpeg to merge flv video'''
 
     if not cli:
@@ -44,9 +44,11 @@ def merge_flv(cli,video_parts,output):
         LOGLEVEL = ''
 
     tempfile = make_merge_filelist(video_parts,output+".merge")
+    output = ".".join([output,to_ext])
+
     cmd =  " ".join([cli,
                     LOGLEVEL,
-                    "-f concat -i", 
+                    "-f concat -i",
                     shlex.quote(tempfile),
                     "-c copy",
                     shlex.quote(output)])
@@ -59,7 +61,7 @@ def merge_flv(cli,video_parts,output):
 
     return True
 
-def merge_video(ext,video_parts,output):
+def merge_video(ext,video_parts,output,to_ext='flv'):
     u'''wrapper function to dispatch'''
 
     if check_cmd('ffmpeg'):
@@ -70,8 +72,8 @@ def merge_video(ext,video_parts,output):
         print("NO FFmpeg or Avconv Found, skip")
         return False
 
-    if "flv" == ext:
-        return merge_flv(cli,video_parts,output)
+    if "flv" == ext and ( "flv" == to_ext or "mp4" == to_ext ):
+        return merge_flv(cli,video_parts,output,to_ext)
     else:
         print("Ext format NOT support now, skip")
         return False
@@ -82,4 +84,4 @@ if __name__ == "__main__":
     output = '【Vmoe字幕組】LiSA演唱会 ~LOVER"S"MiLE~ in 日比谷野音.flv'
     merge_video("flv",parts,output)
 
-                    
+

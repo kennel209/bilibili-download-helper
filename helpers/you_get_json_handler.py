@@ -21,7 +21,7 @@ def set_debug(flag):
 
 def handler(url):
     u'''打包处理函数'''
-    
+
     # check command
     if not check_cmd('you-get'):
         print("Cannot found you-get in Path")

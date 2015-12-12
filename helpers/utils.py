@@ -32,4 +32,4 @@ def check_cmd(cli):
 
     print('weird, check cmd error')
     sys.exit(1)
-        
+
