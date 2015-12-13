@@ -54,6 +54,8 @@ def extract_bilibili(data):
         title = title_match.group(1)
         # unquote html entities
         title = unescape(title.strip())
+        # replace / to _
+        title = title.replace(os.sep,"_")
     debug(title)
 
     index = 0

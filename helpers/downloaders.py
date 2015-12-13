@@ -62,7 +62,12 @@ class Aria2_Downloader(Downloader):
         args = shlex.split(cmd)
         debug("Downloading (aria2c) {}".format(cmd))
         # TODO 异常处理
-        subprocess.call(args)
+        try:
+            subprocess.check_call(args)
+        except subprocess.CalledProcessError:
+            print("Some Error Occured in Downloading {}".format(filename))
+            print("Please Try again manually")
+            sys.exit(1)
 
 class Wget_Downloader(Downloader):
     u'''wget下载器，通过subprocess模块调用'''
@@ -81,7 +86,12 @@ class Wget_Downloader(Downloader):
         args = shlex.split(cmd)
         debug("Downloading (wget) {}".format(cmd))
         # TODO 异常处理
-        subprocess.call(args)
+        try:
+            subprocess.check_call(args)
+        except subprocess.CalledProcessError:
+            print("Some Error Occured in Downloading {}".format(filename))
+            print("Please Try again manually")
+            sys.exit(1)
 
 DOWNLOADERS={"fake":Fake_Downloader,
             "aria2":Aria2_Downloader,

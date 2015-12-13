@@ -43,7 +43,9 @@ def merge_flv(cli,video_parts,output,to_ext='flv'):
     else:
         LOGLEVEL = ''
 
-    tempfile = make_merge_filelist(video_parts,output+".merge")
+    # NOTE: ffmpeg require concat input file to be in top directory
+    #       use basename to remove any os separator
+    tempfile = make_merge_filelist(video_parts,os.path.basename(output)+".merge")
     output = ".".join([output,to_ext])
 
     cmd =  " ".join([cli,
@@ -55,9 +57,14 @@ def merge_flv(cli,video_parts,output,to_ext='flv'):
     debug(cmd)
     args = shlex.split(cmd)
     # TODO non-blocking
-    subprocess.call(args)
-
-    os.remove(tempfile)
+    try:
+        subprocess.check_call(args)
+    except subprocess.CalledProcessError:
+        print("Some Error Occured in Merge {}".format(output))
+        print("You should clean up tempfile youself")
+        return False
+    finally:
+        os.remove(tempfile)
 
     return True
 
@@ -73,6 +80,9 @@ def merge_video(ext,video_parts,output,to_ext='flv'):
         return False
 
     if "flv" == ext and ( "flv" == to_ext or "mp4" == to_ext ):
+        if ext == to_ext and len(video_parts) <= 1:
+            print("No NEED to convert {}".format(ext))
+            return True
         return merge_flv(cli,video_parts,output,to_ext)
     else:
         print("Ext format NOT support now, skip")

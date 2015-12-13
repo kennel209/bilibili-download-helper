@@ -7,7 +7,7 @@ import argparse
 from helpers.url_generater import generate_urls, get_url_index
 from helpers import downloaders as you_get_downloader
 from helpers import bilibili_info_extractor
-from helpers.video_process import merge_video
+from helpers import video_process
 try:
     from helpers import youtube_dl_handler as url_handler
 except ImportError:
@@ -26,6 +26,7 @@ def set_debug(flag):
     DEBUG = flag
     url_handler.set_debug(flag)
     you_get_downloader.set_debug(flag)
+    video_process.set_debug(flag)
 
 def download(baseurl,
             range_=0,
@@ -105,11 +106,12 @@ def download(baseurl,
             if dry_run:
                 continue
 
-            result = merge_video(ext,parts,filename,to_ext)
+            result = video_process.merge_video(ext,parts,filename,to_ext)
 
             # successful merged, delete parts_file
             if result:
                 for f in parts:
+                    debug("removing {}".format(f))
                     os.remove(f)
 
         else:
@@ -135,10 +137,11 @@ def download(baseurl,
 
                 print("Try converting: {} -> {}".format(old_name,file_name))
 
-                result = merge_video(ext,[old_name],filename,to_ext)
+                result = video_process.merge_video(ext,[old_name],filename,to_ext)
 
                 # successful converted
                 if result:
+                    debug("removing {}".format(old_name))
                     os.remove(old_name)
 
         # print INFO
