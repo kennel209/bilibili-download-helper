@@ -56,7 +56,7 @@ def extract_urls(data):
     debug("extract useful data")
     urls = [l.strip() for l in data.split()]
     debug(urls)
-    if ".flv" in urls[0]:
+    if ".flv" or ".hlv" in urls[0]:
         video_format="flv"
 
     # TODO dirty return
