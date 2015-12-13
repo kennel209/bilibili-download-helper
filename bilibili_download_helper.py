@@ -27,6 +27,7 @@ def set_debug(flag):
     url_handler.set_debug(flag)
     you_get_downloader.set_debug(flag)
     video_process.set_debug(flag)
+    bilibili_info_extractor.set_debug(flag)
 
 def download(baseurl,
             range_=0,
@@ -158,12 +159,16 @@ def do_work(args):
 
     if args.auto:
         # auto mode
-        title,index = bilibili_info_extractor.extract_info(args.baseurl)
+        titles,index = bilibili_info_extractor.extract_info(args.baseurl)
 
         # print INFO
         print("-"*40)
-        print("Title: {}".format(title))
+        print("Title: {}".format(titles[0]))
         print("Parts: {}".format(1 if index == 0 else index))
+        pages=[]
+        for p_i in range(index):
+            print("Part {}: {}".format(p_i+1,titles[p_i+1]))
+            pages.append(titles[p_i+1])
         print("-"*40)
         print("")
 
@@ -182,7 +187,7 @@ def do_work(args):
         download(args.baseurl,
                 range_=range_,
                 start=start,
-                name_prefix=title,
+                name_prefix=titles[0],
                 info_extract=extractor,
                 downloader=downloader,
                 dry_run=args.dry_run,

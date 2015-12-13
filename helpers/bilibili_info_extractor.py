@@ -46,7 +46,7 @@ def get_url(url,encoding='utf-8'):
 def extract_bilibili(data):
     u'''使用re解析html，获取title和index'''
 
-    title = ""
+    titles = []
     # 非贪婪搜索
     title_pattern = re.compile(r'<h1\s+title="([^"]+?)">')
     title_match = title_pattern.search(data)
@@ -57,7 +57,9 @@ def extract_bilibili(data):
         # replace / to _
         title = title.replace(os.sep,"_")
         title = title.replace(os.linesep,"_")
-    debug(title)
+    else:
+        title = ""
+    titles.append(title)
 
     index = 0
     # 非贪婪搜索
@@ -65,10 +67,28 @@ def extract_bilibili(data):
     text_match = text_pattern.search(data)
     if text_match:
         #debug(text_match.groups())
-        index = text_match.group(1).count(r"<option")
+        parts_data = text_match.group(1)
+        index = parts_data.count(r"<option")
     debug(index)
 
-    return title,index
+    # have multi pages
+    page_pattern = re.compile(r'<option.*?>(.*?)</option>')
+    id_pattern = re.compile(r"^\d+、\s*")
+    if index > 0:
+        for page_match in page_pattern.finditer(parts_data):
+            page_title = page_match.group(1)
+            # unquote html entities
+            page_title = unescape(page_title.strip())
+            # replace / to _
+            page_title = page_title.replace(os.sep,"_")
+            page_title = page_title.replace(os.linesep,"_")
+            # delete bilibli page prefix
+            page_title = id_pattern.sub("",page_title)
+            titles.append(page_title)
+
+    debug(titles)
+
+    return titles,index
 
 def extract_info(url):
     u'''info extract wrapper'''
