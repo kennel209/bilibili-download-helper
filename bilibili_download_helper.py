@@ -93,18 +93,16 @@ def download(baseurl,
                 part_name = ".".join([filename,part_index,ext])
                 parts.append(part_name)
 
-                print("URL part: {} -> {}".format(part_index,part_name))
-                if dry_run:
-                    continue
+                debug("URL part: {} -> {}".format(part_index,part_name))
 
-                downloader.download(part_url,filename=part_name)
+            if dry_run:
+                continue
+
+            downloader.download(info[0],parts)
 
             # POST process, merge & convert
 
             print("Try Merging: {}".format(file_name))
-
-            if dry_run:
-                continue
 
             result = video_process.merge_video(ext,parts,filename,to_ext)
 
@@ -117,7 +115,7 @@ def download(baseurl,
         else:
             # 单分段
 
-            # TODO file duplication leave to external_downloader
+            # NOTE: file duplication leave to external_downloader
             if dry_run:
                 continue
 
@@ -128,7 +126,7 @@ def download(baseurl,
                     print("{} has downloaded, skip".format(new_name))
                     continue
 
-            downloader.download(info[0][0],filename=file_name)
+            downloader.download(info[0],[file_name])
 
             # POST process, convert
             if to_ext != ext:

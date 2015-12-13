@@ -56,7 +56,7 @@ def merge_flv(cli,video_parts,output,to_ext='flv'):
                     shlex.quote(output)])
     debug(cmd)
     args = shlex.split(cmd)
-    # TODO non-blocking
+
     try:
         subprocess.check_call(args)
     except subprocess.CalledProcessError:

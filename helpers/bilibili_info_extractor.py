@@ -56,6 +56,7 @@ def extract_bilibili(data):
         title = unescape(title.strip())
         # replace / to _
         title = title.replace(os.sep,"_")
+        title = title.replace(os.linesep,"_")
     debug(title)
 
     index = 0

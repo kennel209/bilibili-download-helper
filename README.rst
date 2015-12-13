@@ -6,7 +6,7 @@ bilibili-download-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
-:Version: 0.4
+:Version: 0.5
 :License: GPL 3
 
 这是什么？
@@ -23,18 +23,20 @@ bilibili-download-helper
 特性
 ------------
 
-* 为了方便使用多线程下载（ aria2 ）预设10段10线程(-x 10 -s 10)
-* 单线程也可使用wget
 * 批量下载bilibili多P
+* 为了方便使用多线程下载（ aria2 ）预设5段5线程5并行任务(-x5 -s5 -j5)
+* 对于某P多分段进行并行下载
+* 通过 -o DIR/NAME_ROOT 下载到其他目录
 * 使用 youtube-dl 或者 you-get 解析下载路径
 * 通过 libav 支持合并多段（暂时支持合并flv）
 * 通过 libav 转化为mp4
+* 单线程也可使用wget
+
 
 TODO
 ------------
 
-* 更多aria2c option支持
-* 输出目录支持
+* 自动模式，重命名机制
 * 非分p自动化支持
 * 自己进行url解析？
 
