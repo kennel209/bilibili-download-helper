@@ -171,9 +171,12 @@ def do_work(args):
             # do not worry about single part
             range_ = index
             start = 1
-        else: 
+        else:
             start = args.start
-            range_ = index-start+1
+            if args.range > 0:
+                range_ = args.range
+            else:
+                range_ = index-start+1
 
         download(args.baseurl,
                 range_=range_,
