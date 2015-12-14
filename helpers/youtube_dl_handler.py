@@ -17,6 +17,7 @@ def handler(url):
     u'''打包处理函数'''
     data = handler_command(url)
     info = extract_urls(data)
+    debug(info)
     return info
 
 def handler_command(url, encoding="utf8"):
@@ -47,8 +48,12 @@ def extract_urls(data):
     debug("extract useful data")
     urls = [l.strip() for l in data.split()]
     debug(urls)
-    if ".flv" or ".hlv" in urls[0]:
+    if ".flv" in urls[0]: 
         video_format="flv"
+    elif ".hlv" in urls[0]:
+        video_format="flv"
+    elif ".mp4" in urls[0]:
+        video_format="mp4"
 
     # TODO dirty return
     return urls,video_format,None
