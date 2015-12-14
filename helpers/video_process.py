@@ -3,23 +3,12 @@
 
 import sys
 import os
-
 import subprocess
 import shlex
-
 from .utils import check_cmd
+from .utils import debug,set_debug
 
 DEBUG=False
-
-def debug(s,out=sys.stdout):
-    '''common DEBUG function, depend on Glogal DEBUG'''
-    if DEBUG:
-        print("DEBUG: {!s}".format(s),file=out)
-
-def set_debug(flag):
-    '''SET DEBUG flag recursively'''
-    global DEBUG
-    DEBUG = flag
 
 def make_merge_filelist(parts,outfile='temp.merge'):
     u'''write tempfile to generate filelist for merge'''

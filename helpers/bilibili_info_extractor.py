@@ -3,45 +3,13 @@
 
 import sys
 import os
-from urllib.request import urlopen
-from urllib.error import URLError
-from html import unescape
-import gzip
 import re
+from html import unescape
+from .utils import escape_seps
+from .utils import debug,set_debug
+from .utils import get_url
 
 DEBUG=False
-
-def debug(s,out=sys.stdout):
-    '''common DEBUG function, depend on Glogal DEBUG'''
-    if DEBUG:
-        print("DEBUG: {!s}".format(s),file=out)
-
-def set_debug(flag):
-    '''SET DEBUG flag recursively'''
-    global DEBUG
-    DEBUG = flag
-
-def get_url(url,encoding='utf-8'):
-    u'''urlopen to getdata'''
-    try:
-        r = urlopen(url)
-        debug((r.geturl(),r.status,r.reason))
-        if r.status == 200:
-            data = r.read()
-            # gzip to decompress
-            comp = r.getheader("Content-Encoding")
-            if "gzip" == comp:
-                data = gzip.decompress(data)
-            # b'string' -> 'string'
-            data_u = data.decode(encoding)
-            #debug(data_u)
-            return data_u
-        else:
-            print(r.status,r.reason,"OPEN URL ERROR")
-            sys.exit(1)
-    except URLError as err:
-        print(err)
-        sys.exit(1)
 
 def extract_bilibili(data):
     u'''使用re解析html，获取title和index'''
@@ -55,8 +23,7 @@ def extract_bilibili(data):
         # unquote html entities
         title = unescape(title.strip())
         # replace / to _
-        title = title.replace(os.sep,"_")
-        title = title.replace(os.linesep,"_")
+        title = escape_seps(title)
     else:
         title = ""
     titles.append(title)
@@ -80,8 +47,7 @@ def extract_bilibili(data):
             # unquote html entities
             page_title = unescape(page_title.strip())
             # replace / to _
-            page_title = page_title.replace(os.sep,"_")
-            page_title = page_title.replace(os.linesep,"_")
+            page_title = escape_seps(page_title)
             # delete bilibli page prefix
             page_title = id_pattern.sub("",page_title)
             titles.append(page_title)

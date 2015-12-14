@@ -4,8 +4,9 @@
 import sys
 import os
 import argparse
+from helpers.utils import debug,set_debug
 from helpers.url_generater import generate_urls, get_url_index
-from helpers import downloaders as you_get_downloader
+from helpers import downloaders
 from helpers import bilibili_info_extractor
 from helpers import video_process
 try:
@@ -15,26 +16,12 @@ except ImportError:
 
 DEBUG=False
 
-def debug(s,out=sys.stdout):
-    '''common DEBUG function, depend on Glogal DEBUG'''
-    if DEBUG:
-        print("DEBUG: {!s}".format(s),file=out)
-
-def set_debug(flag):
-    '''SET DEBUG flag recursively'''
-    global DEBUG
-    DEBUG = flag
-    url_handler.set_debug(flag)
-    you_get_downloader.set_debug(flag)
-    video_process.set_debug(flag)
-    bilibili_info_extractor.set_debug(flag)
-
 def download(baseurl,
             range_=0,
             start=0,
             name_prefix="",
             info_extract=url_handler.handler,
-            downloader=you_get_downloader.Aria2_Downloader,
+            downloader=downloaders.Aria2_Downloader,
             dry_run=False,
             to_ext='mp4'):
     u'''主函数，批量生成url，使用下载器下载'''
@@ -155,7 +142,7 @@ def do_work(args):
 
     # url采集函数和下载器
     extractor = url_handler.handler
-    downloader = you_get_downloader.DOWNLOADERS[args.downloader]
+    downloader = downloaders.DOWNLOADERS[args.downloader]
 
     if args.auto:
         # auto mode
@@ -167,7 +154,7 @@ def do_work(args):
         print("Parts: {}".format(1 if index == 0 else index))
         pages=[]
         for p_i in range(index):
-            print("Part {}: {}".format(p_i+1,titles[p_i+1]))
+            print("Part {:02}: {}".format(p_i+1,titles[p_i+1]))
             pages.append(titles[p_i+1])
         print("-"*40)
         print("")
@@ -244,7 +231,8 @@ def main():
     assert args.range >= 0
 
     # 调试模式全局变量
-    set_debug( args.verbose)
+    mod = [url_handler, downloaders, video_process, bilibili_info_extractor]
+    set_debug( args.verbose, mod)
     debug(args)
     do_work(args)
 

@@ -5,22 +5,13 @@ import subprocess as sb
 import shlex
 import sys
 from .utils import check_cmd
+from .utils import debug,set_debug
 
 DEBUG=False
 
 # check command
 if not check_cmd('youtube-dl'):
     raise ImportError("Cannot found youtube-dl in Path")
-
-def debug(s,out=sys.stdout):
-    '''common DEBUG function, depend on Glogal DEBUG'''
-    if DEBUG:
-        print("DEBUG: {!s}".format(s),file=out)
-
-def set_debug(flag):
-    '''SET DEBUG flag recursively'''
-    global DEBUG
-    DEBUG = flag
 
 def handler(url):
     u'''打包处理函数'''
