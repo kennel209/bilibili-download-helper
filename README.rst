@@ -6,7 +6,7 @@ bilibili-download-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
-:Version: 0.5
+:Version: 0.6
 :License: GPL 3
 
 这是什么？
@@ -16,7 +16,7 @@ bilibili-download-helper
 
 你需要保证路径中可以使用 ``youtube-dl`` （优先）或者 ``you-get`` 和 ``aria2c`` 来使用这个脚本。
 
-为了支持分段合并转化，你同样需要 ``ffmpeg`` 或者 ``avconv`` 来使用这个脚本。
+为了支持分段合并转化，你同样需要 ``ffmpeg`` 或者 ``avconv`` 来使用这个脚本。(可选，不然就是一堆flv)
 
 当然还有 ``python3.4`` -_-b
 
@@ -24,6 +24,7 @@ bilibili-download-helper
 ------------
 
 * 批量下载bilibili多P
+* 懒人自动模式，自动重命名，建立文件夹，下载全P（可选P）
 * 为了方便使用多线程下载（ aria2 ）预设5段5线程5并行任务(-x5 -s5 -j5)
 * 对于某P多分段进行并行下载
 * 通过 -o DIR/NAME_ROOT 下载到其他目录
@@ -36,9 +37,9 @@ bilibili-download-helper
 TODO
 ------------
 
-* 自动模式，重命名机制
+* 下载失败时候，跳过该P
 * 非分p自动化支持
-* 自己进行url解析？
+* 自己进行api解析(v1.x)
 
 用法例子
 -----------
@@ -46,16 +47,28 @@ TODO
 .. code:: console
 
     # 懒人模式（一键）
-    # 懒人
-    $ ./bilibili_download_helper.py -a http://www.bilibili.com/video/av1242782/
+    $ ./bilibili_download_helper.py -a http://www.bilibili.com/video/av3316724/
 
-    Title: 【Vmoe字幕组】LiSA LiVE is Smile Always in武道馆
-    Parts: 5
-    http://www.bilibili.com/video/av1242782/index_01.html -> 【Vmoe字幕组】LiSA LiVE is Smile Always in武道馆_01.mp4
-    http://www.bilibili.com/video/av1242782/index_02.html -> 【Vmoe字幕组】LiSA LiVE is Smile Always in武道馆_02.mp4
-    http://www.bilibili.com/video/av1242782/index_03.html -> 【Vmoe字幕组】LiSA LiVE is Smile Always in武道馆_03.mp4
-    http://www.bilibili.com/video/av1242782/index_04.html -> 【Vmoe字幕组】LiSA LiVE is Smile Always in武道馆_04.mp4
-    http://www.bilibili.com/video/av1242782/index_05.html -> 【Vmoe字幕组】LiSA LiVE is Smile Always in武道馆_05.mp4
+    http://www.bilibili.com/video/av3316724/index_01.html -> 【合集】LoveLive！第二季【bilibili正版】/01 再一次 LoveLive！.mp4
+    http://www.bilibili.com/video/av3316724/index_02.html -> 【合集】LoveLive！第二季【bilibili正版】/02 向着胜利前进.mp4
+    http://www.bilibili.com/video/av3316724/index_03.html -> 【合集】LoveLive！第二季【bilibili正版】/03 梦想之门扉.mp4
+    http://www.bilibili.com/video/av3316724/index_04.html -> 【合集】LoveLive！第二季【bilibili正版】/04 宇宙第一偶像.mp4
+    http://www.bilibili.com/video/av3316724/index_05.html -> 【合集】LoveLive！第二季【bilibili正版】/05 全新的自我.mp4
+    http://www.bilibili.com/video/av3316724/index_06.html -> 【合集】LoveLive！第二季【bilibili正版】/06 万圣节快乐.mp4
+    http://www.bilibili.com/video/av3316724/index_07.html -> 【合集】LoveLive！第二季【bilibili正版】/07 不做些什么的话.mp4
+    http://www.bilibili.com/video/av3316724/index_08.html -> 【合集】LoveLive！第二季【bilibili正版】/08 我的愿望.mp4
+    http://www.bilibili.com/video/av3316724/index_09.html -> 【合集】LoveLive！第二季【bilibili正版】/09 心之旋律.mp4
+    http://www.bilibili.com/video/av3316724/index_10.html -> 【合集】LoveLive！第二季【bilibili正版】/10 μ's.mp4
+    http://www.bilibili.com/video/av3316724/index_11.html -> 【合集】LoveLive！第二季【bilibili正版】/11 我们决定的事情.mp4
+    http://www.bilibili.com/video/av3316724/index_12.html -> 【合集】LoveLive！第二季【bilibili正版】/12 Last Live.mp4
+    http://www.bilibili.com/video/av3316724/index_13.html -> 【合集】LoveLive！第二季【bilibili正版】/13 实现吧！大家的梦想――.mp4
+
+    # 选择区域-s Start／ -i Range ／修正分P前缀 -f
+    $ ./bilibili_download_helper.py -a http://www.bilibili.com/video/av1358908/  -s 2 -i 3 -f
+
+    http://www.bilibili.com/video/av1358908/index_02.html -> 【合集】我的妹妹不可能那么可爱 第二季【Bilibili正版】/02 我信任的大哥哪有可能因为沉迷于便携式美少女游戏而来性骚扰我.mp4
+    http://www.bilibili.com/video/av1358908/index_03.html -> 【合集】我的妹妹不可能那么可爱 第二季【Bilibili正版】/03 我的朋友哪有可能摘下眼镜.mp4
+    http://www.bilibili.com/video/av1358908/index_04.html -> 【合集】我的妹妹不可能那么可爱 第二季【Bilibili正版】/04 我妹妹的对手哪有可能来日本.mp4
 
 .. code:: console
 
@@ -80,8 +93,9 @@ TODO
 
     $ ./bilibili_download_helper.py -h
 
-    usage: bilibili_download_helper.py [-h] [-a] [-i RANGE] [-s START] [-o PREFIX]
-                                       [-t TO_EXT] [-d DOWNLOADER] [-n] [-v]
+    usage: bilibili_download_helper.py [-h] [-a] [-f] [-i RANGE] [-s START]
+                                       [-o PREFIX] [-t TO_EXT] [-d DOWNLOADER]
+                                       [-n] [-v]
                                        baseurl
 
     A small script to help downloading Bilibily video via you-get & aria2
@@ -92,6 +106,8 @@ TODO
     optional arguments:
       -h, --help            show this help message and exit
       -a, --auto            automatic download all
+      -f, --add-index-prefix
+                            add index to Page auto naming
       -i RANGE, --range RANGE
                             range to generate, 1 to index, 0 for current, no auto
                             naming, default 0

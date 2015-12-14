@@ -9,6 +9,8 @@ from helpers.url_generater import generate_urls, get_url_index
 from helpers import downloaders
 from helpers import bilibili_info_extractor
 from helpers import video_process
+from time import sleep
+
 try:
     from helpers import youtube_dl_handler as url_handler
 except ImportError:
@@ -23,7 +25,8 @@ def download(baseurl,
             info_extract=url_handler.handler,
             downloader=downloaders.Aria2_Downloader,
             dry_run=False,
-            to_ext='mp4'):
+            to_ext='mp4',
+            titles=False):
     u'''主函数，批量生成url，使用下载器下载'''
 
     # correct start
@@ -47,12 +50,18 @@ def download(baseurl,
             print("ERROR in extract INDEX, EXIT")
             sys.exit(1)
 
+        if titles:
+            title_name = titles[int(index)-1]
+
         if name_prefix == "":
             filename = index
         elif fixed_prefix:
             filename = name_prefix
         else:
-            filename = "_".join([name_prefix,index])
+            if titles:
+                filename = os.sep.join([name_prefix,title_name])
+            else:
+                filename = "_".join([name_prefix,index])
 
         file_name = ".".join([filename,ext])
 
@@ -136,6 +145,8 @@ def download(baseurl,
         print("Done: {}".format(file_name))
         print("-"*40)
         print("")
+        # prevent overspeed
+        sleep(1)
 
 def do_work(args):
     u'''分配命令，调用下载主函数'''
@@ -155,7 +166,10 @@ def do_work(args):
         pages=[]
         for p_i in range(index):
             print("Part {:02}: {}".format(p_i+1,titles[p_i+1]))
-            pages.append(titles[p_i+1])
+            if args.add_index_prefix:
+                pages.append("{:02} {}".format(p_i+1, titles[p_i+1]))
+            else:
+                pages.append(titles[p_i+1])
         print("-"*40)
         print("")
 
@@ -178,7 +192,8 @@ def do_work(args):
                 info_extract=extractor,
                 downloader=downloader,
                 dry_run=args.dry_run,
-                to_ext=args.to_ext)
+                to_ext=args.to_ext,
+                titles=pages)
 
     else:
         # normal mode
@@ -201,6 +216,9 @@ def main():
     parser.add_argument("-a","--auto",
                         action="store_true",
                         help="automatic download all")
+    parser.add_argument("-f","--add-index-prefix",
+                        action="store_true",
+                        help="add index to Page auto naming")
     parser.add_argument("-i","--range",
                         type=int,
                         default=0,
