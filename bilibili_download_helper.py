@@ -152,6 +152,16 @@ def do_work(args):
     u'''分配命令，调用下载主函数'''
 
     # url采集函数和下载器
+    # FIXME: quick hack
+    if args.backend == "you-get":
+        from helpers import you_get_json_handler as url_handler
+    elif args.backend == "youtube-dl":
+        from helpers import youtube_dl_handler as url_handler
+    else:
+        print("No extractor, exit")
+        sys.exit(1)
+
+    # FIXME: rewrite to more formal
     extractor = url_handler.handler
     downloader = downloaders.DOWNLOADERS[args.downloader]
 
@@ -239,6 +249,9 @@ def main():
     parser.add_argument("-n","--dry-run",
                         action="store_true",
                         help="just print info, do not actually downdloading")
+    parser.add_argument("-b","--backend",
+                        default="youtube-dl",
+                        help="info extractor, default youtube-dl, [youtube-dl,you-get]")
     parser.add_argument("-v","--verbose",
                         action="store_true",
                         help="more info")
