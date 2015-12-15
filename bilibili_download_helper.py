@@ -11,19 +11,14 @@ from helpers import bilibili_info_extractor
 from helpers import video_process
 from time import sleep
 
-try:
-    from helpers import youtube_dl_handler as url_handler
-except ImportError:
-    from helpers import you_get_json_handler as url_handler
-
 DEBUG=False
 
 def download(baseurl,
             range_=0,
             start=0,
             name_prefix="",
-            info_extract=url_handler.handler,
-            downloader=downloaders.Aria2_Downloader,
+            info_extract=None,
+            downloader=None,
             dry_run=False,
             to_ext='mp4',
             titles=False):
@@ -152,16 +147,6 @@ def do_work(args):
     u'''分配命令，调用下载主函数'''
 
     # url采集函数和下载器
-    # FIXME: quick hack
-    if args.backend == "you-get":
-        from helpers import you_get_json_handler as url_handler
-    elif args.backend == "youtube-dl":
-        from helpers import youtube_dl_handler as url_handler
-    else:
-        print("No extractor, exit")
-        sys.exit(1)
-
-    # FIXME: rewrite to more formal
     extractor = url_handler.handler
     downloader = downloaders.DOWNLOADERS[args.downloader]
 
@@ -260,6 +245,17 @@ def main():
 
     assert args.start >= 1
     assert args.range >= 0
+
+    # FIXME: quick hack
+    global url_handler
+    if args.backend == "you-get":
+        from helpers import you_get_json_handler as url_handler
+    elif args.backend == "youtube-dl":
+        from helpers import youtube_dl_handler as url_handler
+    else:
+        print("no extractor, exit")
+        sys.exit(1)
+    #debug(repr(url_handler))
 
     # 调试模式全局变量
     mod = [url_handler, downloaders, video_process, bilibili_info_extractor]
