@@ -58,7 +58,8 @@ class Aria2_Downloader(Downloader):
 
         try:
             subprocess.check_call(args)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as err:
+            print(err)
             print("Some Error Occured in Downloading {}".format(filenames))
             print("Please Try again manually")
             sys.exit(1)
@@ -75,7 +76,7 @@ class Aria2_Downloader(Downloader):
                 out.write('out='+filename)
                 out.write('\n')
 
-        return temp_name 
+        return temp_name
 
 class Wget_Downloader(Downloader):
     u'''wget下载器，通过subprocess模块调用'''
@@ -98,7 +99,8 @@ class Wget_Downloader(Downloader):
 
             try:
                 subprocess.check_call(args)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as err:
+                print(err)
                 print("Some Error Occured in Downloading {}".format(filename))
                 print("Please Try again manually")
                 sys.exit(1)

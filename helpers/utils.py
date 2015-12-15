@@ -20,7 +20,7 @@ def debug(s,out=sys.stdout):
 def set_debug(flag,modules=None):
     '''SET DEBUG flag recursively'''
     global DEBUG
-    
+
     # 消除循环设置
     if debug == flag:
         return
@@ -31,7 +31,7 @@ def set_debug(flag,modules=None):
         modules = []
     for m in modules:
         m.set_debug(flag)
-    
+
 def get_url(url,encoding='utf-8'):
     u'''urlopen to getdata'''
     try:

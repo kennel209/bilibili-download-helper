@@ -48,7 +48,8 @@ def merge_flv(cli,video_parts,output,to_ext='flv'):
 
     try:
         subprocess.check_call(args)
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as err:
+        print(err)
         print("Some Error Occured in Merge {}".format(output))
         print("You should clean up tempfile youself")
         return False
