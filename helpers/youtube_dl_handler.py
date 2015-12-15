@@ -48,12 +48,19 @@ def extract_urls(data):
     debug("extract useful data")
     urls = [l.strip() for l in data.split()]
     debug(urls)
-    if ".flv" in urls[0]: 
+    test_url = urls[0].lower()
+    if ".flv" in test_url: 
         video_format="flv"
-    elif ".hlv" in urls[0]:
+    elif ".hlv" in test_url:
         video_format="flv"
-    elif ".mp4" in urls[0]:
+    elif ".mp4" in test_url:
         video_format="mp4"
+#    elif "flash" in test_url:
+#        video_format="flv"
+    else:
+        print("UNKNOWN TYPE, Test_url={}".format(test_url))
+        print("Assume FLV")
+        video_format="flv"
 
     # TODO dirty return
     return urls,video_format,None
