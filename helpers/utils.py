@@ -40,7 +40,7 @@ def get_url(url,encoding='utf-8'):
         if r.status == 200:
             data = r.read()
             # gzip to decompress
-            comp = r.getheader("Content-Encoding")
+            comp = r.getheader("Content-Encoding") or "none"
             if "gzip" in comp:
                 data = gzip.decompress(data)
             elif "deflate" in comp:
