@@ -40,14 +40,14 @@ def handler_command(url, encoding="utf8"):
         sys.exit(1)
     # 编码转换
     data_u = data.decode(encoding)
-    debug(data_u)
+    #debug(data_u)
     return data_u
 
 def extract_urls(data):
     u'''解析 json 对象， 获取下载url和后缀'''
     debug("extract useful data")
     urls = [l.strip() for l in data.split()]
-    debug(urls)
+    #debug(urls)
     test_url = urls[0].lower()
     if ".flv" in test_url:
         video_format="flv"

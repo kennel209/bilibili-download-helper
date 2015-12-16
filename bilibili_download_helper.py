@@ -235,8 +235,8 @@ def main():
                         action="store_true",
                         help="just print info, do not actually downdloading")
     parser.add_argument("-b","--backend",
-                        default="youtube-dl",
-                        help="info extractor, default youtube-dl, [youtube-dl,you-get]")
+                        default="native",
+                        help="info extractor, default native, [native,youtube-dl,you-get]")
     parser.add_argument("-v","--verbose",
                         action="store_true",
                         help="more info")
@@ -253,8 +253,7 @@ def main():
     elif args.backend == "youtube-dl":
         from helpers import youtube_dl_handler as url_handler
     else:
-        print("no extractor, exit")
-        sys.exit(1)
+        from helpers import native_json_handler as url_handler   
     #debug(repr(url_handler))
 
     # 调试模式全局变量

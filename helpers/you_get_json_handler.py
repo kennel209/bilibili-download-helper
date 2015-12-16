@@ -19,6 +19,7 @@ def handler(url):
     data = handler_command(url)
     obj = handler_json(data)
     info = extract_urls(obj)
+    debug(info)
     return info
 
 def handler_command(url, encoding="utf8"):
@@ -42,7 +43,7 @@ def handler_command(url, encoding="utf8"):
     # 编码转换
     # TODO 可能在某些终端不转化更好，需要you-get json部分patch safe_ascii
     data_u = data.decode(encoding)
-    debug(data_u)
+    #debug(data_u)
     return data_u
 
 def handler_json(data):
@@ -64,13 +65,13 @@ def extract_urls(json_obj):
         #down_urls = streams[profile]["src"]
         #debug(down_urls)
     profile = "__default__"
-    debug("find stream {}".format(profile))
+    #debug("find stream {}".format(profile))
     video_format = streams[profile]["container"]
-    debug(video_format)
+    #debug(video_format)
     video_size = streams[profile]["size"]
-    debug(video_size)
+    #debug(video_size)
     down_urls = streams[profile]["src"]
-    debug(down_urls)
+    #debug(down_urls)
 
     # TODO dirty return
     return down_urls,video_format,video_size

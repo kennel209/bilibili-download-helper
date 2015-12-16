@@ -14,8 +14,6 @@ bilibili-download-helper
 
 只是一个使用 ``aria2`` 加速下载bilibli视频的包装器。
 
-你需要保证路径中可以使用 ``youtube-dl`` （优先）或者 ``you-get`` 和 ``aria2c`` 来使用这个脚本。
-
 为了支持分段合并转化，你同样需要 ``ffmpeg`` 或者 ``avconv`` 来使用这个脚本。(可选，不然就是一堆flv)
 
 当然还有 ``python3.4`` -_-b
@@ -28,17 +26,16 @@ bilibili-download-helper
 * 为了方便使用多线程下载（ aria2 ）预设5段5线程5并行任务(-x5 -s5 -j5)
 * 对于某P多分段进行并行下载
 * 通过 -o DIR/NAME_ROOT 下载到其他目录
-* 使用 youtube-dl 或者 you-get 解析下载路径, 可以使用-b 切换
+* 默认使用原生api解析下载路径（效率高，使用youtube-dl的appkey）
+* 支持使用 youtube-dl 或者 you-get 解析下载路径, 可以使用-b 切换
 * 通过 libav 支持合并多段（暂时支持合并flv）
 * 通过 libav 转化为mp4
 * 单线程也可使用wget
-
 
 TODO
 ------------
 
 * 更多格式转化
-* 自己进行api解析(v1.x), 重构
 
 用法例子
 -----------
@@ -120,7 +117,7 @@ TODO
                             external downloader, default aria2, [aria2,wget,fake]
       -n, --dry-run         just print info, do not actually downdloading
       -b BACKEND, --backend BACKEND
-                            info extractor, default youtube-dl, [youtube-dl,you-
-                            get]
+                            info extractor, default native, [native,youtube-
+                            dl,you-get]
       -v, --verbose         more info
 
