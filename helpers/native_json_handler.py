@@ -7,10 +7,7 @@ import re
 import shlex
 import sys
 from functools import lru_cache # for memo
-#from utils import check_cmd
-#from utils import debug,set_debug
-#from utils import get_url
-#from keys import get_appkey
+from random import choice
 from .utils import check_cmd
 from .utils import debug,set_debug
 from .utils import get_url
@@ -121,7 +118,13 @@ def get_video_info(cids,prefer='flv',quality=4):
         down_urls = []
         video_size = 0
         for durl in video_info_dict['durl']:
-            down_urls.append(durl['url'])
+            opt_urls=[]
+            opt_urls.append(durl['url'])
+            if 'backup_url' in durl:
+                for burl in durl['backup_url']:
+                    opt_urls.append(burl)
+            # TODO return muliturl
+            down_urls.append(choice(opt_urls))
             video_size += durl['size'] if 'size' in durl else durl.get('filesize',0)
         #debug(("cid :",cid,down_urls,video_format,video_size))
         res.append((down_urls,video_format,video_size))
