@@ -6,7 +6,7 @@ bilibili-download-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
-:Version: 0.6.1
+:Version: 0.7
 :License: GPL 3
 
 这是什么？
@@ -35,6 +35,9 @@ bilibili-download-helper
 TODO
 ------------
 
+* 自动化重试N次
+* aria2 多url下载优化
+* 片源选择（mp4 & size展示）
 * 更多格式转化
 
 用法例子
