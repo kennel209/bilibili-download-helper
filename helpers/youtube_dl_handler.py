@@ -49,7 +49,7 @@ def extract_urls(data):
     urls = [l.strip() for l in data.split()]
     debug(urls)
     test_url = urls[0].lower()
-    if ".flv" in test_url: 
+    if ".flv" in test_url:
         video_format="flv"
     elif ".hlv" in test_url:
         video_format="flv"
