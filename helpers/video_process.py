@@ -15,7 +15,8 @@ def make_merge_filelist(parts,outfile='temp.merge'):
     with open(outfile, 'w') as out:
         for part in parts:
             out.write('file ')
-            out.write(shlex.quote(part))
+            # escape single quote
+            out.write("'"+part.replace("'","'\\''")+"'")
             out.write('\n')
 
     return outfile
@@ -34,7 +35,8 @@ def merge_flv(cli,video_parts,output,to_ext='flv'):
 
     # NOTE: ffmpeg require concat input file to be in top directory
     #       use basename to remove any os separator
-    tempfile = make_merge_filelist(video_parts,os.path.basename(output)+".merge")
+    # FIXME: escape ":" ?
+    tempfile = make_merge_filelist(video_parts,os.path.basename(output).replace(":","_")+".merge")
     output = ".".join([output,to_ext])
 
     cmd =  " ".join([cli,
