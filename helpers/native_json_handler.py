@@ -76,12 +76,24 @@ def get_av_full_info(aid):
 
 def get_cid_by_av_info(av_json_dict,page=None):
     u'''return cid for certain page or all page'''
-    pages = [page_info for page_info in av_json_dict['list']]
-    cids = [cid['cid'] for cid in pages]
+    cids = [cid['cid'] for cid in av_json_dict['list']]
     if page is None:
         return cids
     else:
         return [cids[int(page)-1]]
+
+def get_title_by_av_info(av_json_dict):
+    u'''return all title in title and pages'''
+    title = av_json_dict['title'].strip()
+    page_titles = [p['part'].strip() for p in av_json_dict['list']]
+    return title,page_titles
+
+def get_title_by_url(url):
+    u'''use aid to find all titles by av info'''
+    aid,_ = get_aid_by_url(url)
+    av_info = get_av_full_info(aid)
+    title,page_titles = get_title_by_av_info(av_info)
+    return title,page_titles
 
 def get_cid_by_page_info(page_json_list,page=None):
     u'''return cid for certain page or all page'''
@@ -90,6 +102,11 @@ def get_cid_by_page_info(page_json_list,page=None):
         return cids
     else:
         return [cids[int(page)-1]]
+
+def get_page_title_by_page_info(page_json_list):
+    u'''return pages into of all page'''
+    pages = [p['pagename'] for p in page_json_list]
+    return pages
 
 def get_video_info_by_cid(cid,prefer='flv',quality=4):
     u'''get real video link by cid'''
@@ -130,13 +147,15 @@ def get_video_info(cids,prefer='flv',quality=4):
         res.append((down_urls,video_format,video_size))
     return res
 
-def handler(url):
+def handler(url,method='av_info'):
     u'''打包处理函数'''
     aid,page = get_aid_by_url(url)
-    #av_info = get_av_full_info(aid)
-    #cids = get_cid_by_av_info(av_info,page)
-    page_info = get_pages_info_by_pagelist(aid)
-    cids = get_cid_by_page_info(page_info,page)
+    if method == 'av_info':
+        av_info = get_av_full_info(aid)
+        cids = get_cid_by_av_info(av_info,page)
+    else:
+        page_info = get_pages_info_by_pagelist(aid)
+        cids = get_cid_by_page_info(page_info,page)
     debug("cid is {}".format(cids))
     info = get_video_info(cids,'flv','4')
     debug(info)

@@ -8,6 +8,7 @@ from html import unescape
 from .utils import escape_seps
 from .utils import debug,set_debug
 from .utils import get_url
+from .native_json_handler import get_title_by_url
 
 DEBUG=False
 
@@ -56,10 +57,47 @@ def extract_bilibili(data):
 
     return titles,index
 
+def extract_bilibili_by_api(url):
+    u'''使用api，获取title和index'''
+
+    title,page_titles = get_title_by_url(url)
+
+    titles = []
+    if title:
+        # unquote html entities
+        title = unescape(title.strip())
+        # replace / to _
+        title = escape_seps(title)
+    else:
+        title = ""
+    titles.append(title)
+
+    if page_titles:
+        #debug(text_match.groups())
+        index = len(page_titles)
+        if index == 1 and page_titles[0] == '':
+            index = 0
+    debug(index)
+
+    # have multi pages
+    if index > 0:
+        for page_title in page_titles:
+            # unquote html entities
+            page_title = unescape(page_title.strip())
+            # replace / to _
+            page_title = escape_seps(page_title)
+            # delete bilibli page prefix
+            titles.append(page_title)
+
+    debug(titles)
+
+    return titles,index
+
 def extract_info(url):
     u'''info extract wrapper'''
-    data = get_url(url)
-    title,index = extract_bilibili(data)
+    #data = get_url(url)
+    #title,index = extract_bilibili(data)
+    title,index = extract_bilibili_by_api(url)
 
     return title,index
 
