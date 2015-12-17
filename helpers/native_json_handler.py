@@ -136,16 +136,39 @@ def get_video_info(cids,prefer='flv',quality=4):
         video_size = 0
         for durl in video_info_dict['durl']:
             opt_urls=[]
+            # FIXME: NEED Check ?
             opt_urls.append(durl['url'])
             if 'backup_url' in durl:
                 for burl in durl['backup_url']:
-                    opt_urls.append(burl)
-            # TODO return muliturl
+                    fmt = check_download_url(burl,prefer)
+                    if fmt and fmt == prefer:
+                        opt_urls.append(burl)
+                    elif fmt and fmt == 'lmp4' and quality==0:
+                        opt_urls.append(burl)
+            # TODO: return muliturl
+            #debug(opt_urls)
             down_urls.append(choice(opt_urls))
             video_size += durl['size'] if 'size' in durl else durl.get('filesize',0)
         #debug(("cid :",cid,down_urls,video_format,video_size))
         res.append((down_urls,video_format,video_size))
     return res
+
+def check_download_url(url,video='flv',quality=0):
+    u'''simple function to check whether the url if currect'''
+    # FIXME: UGLY
+    if video == 'flv':
+        if '.flv' in url:
+            return video
+        if '.hlv' in url:
+            return video
+        if 'flash' in url:
+            return video
+    elif video == 'mp4':
+        if 'hd.mp4' in url:
+            return 'mp4'
+        if '.mp4' in url:
+            return 'lmp4'
+    return False
 
 def handler(url,method='av_info'):
     u'''打包处理函数'''
