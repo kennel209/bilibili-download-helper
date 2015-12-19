@@ -121,5 +121,6 @@ TODO
       -b BACKEND, --backend BACKEND
                             info extractor, default native, [native,youtube-
                             dl,you-get]
+      -r RETRY, --retry RETRY
+                            retry counts when download failed, default 3
       -v, --verbose         more info
-

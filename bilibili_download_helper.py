@@ -21,7 +21,8 @@ def download(baseurl,
             downloader=None,
             dry_run=False,
             to_ext='mp4',
-            titles=False):
+            titles=False,
+            retry_time=3):
     u'''主函数，批量生成url，使用下载器下载'''
 
     # correct start
@@ -36,13 +37,12 @@ def download(baseurl,
 
     url_gen = generate_urls(baseurl,range_,start)
     for url in url_gen:
-        # FIXME: magic retry = 3
-        RETRY = 3
+        # Flags
+        RETRY = retry_time
         SUCC = False
         while RETRY > 0 and SUCC == False:
             # prevent overspeed
-            if not dry_run:
-                sleep(0.5)
+            sleep(0.5)
 
             info = info_extract(url)
 
@@ -68,8 +68,8 @@ def download(baseurl,
 
             file_name = ".".join([filename,ext])
 
-            # FIXME: magic RETRY
-            if RETRY == 3:
+            # first run
+            if RETRY == retry_time:
                 # print INFO
                 print("-"*40)
                 print("{} -> {}".format(url,file_name))
@@ -216,7 +216,8 @@ def do_work(args):
                 downloader=downloader,
                 dry_run=args.dry_run,
                 to_ext=args.to_ext,
-                titles=pages)
+                titles=pages,
+                retry_time=args.retry)
 
     else:
         # normal mode
@@ -227,7 +228,8 @@ def do_work(args):
                 info_extract=extractor,
                 downloader=downloader,
                 dry_run=args.dry_run,
-                to_ext=args.to_ext)
+                to_ext=args.to_ext,
+                retry_time=args.retry)
 
 
 def main():
@@ -265,6 +267,10 @@ def main():
     parser.add_argument("-b","--backend",
                         default="native",
                         help="info extractor, default native, [native,youtube-dl,you-get]")
+    parser.add_argument("-r","--retry",
+                        type=int,
+                        default=3,
+                        help="retry counts when download failed, default 3")
     parser.add_argument("-v","--verbose",
                         action="store_true",
                         help="more info")
@@ -281,7 +287,7 @@ def main():
     elif args.backend == "youtube-dl":
         from helpers import youtube_dl_handler as url_handler
     else:
-        from helpers import native_json_handler as url_handler   
+        from helpers import native_json_handler as url_handler
     #debug(repr(url_handler))
 
     # 调试模式全局变量
