@@ -5,6 +5,7 @@ import sys
 import os
 import argparse
 from helpers.utils import debug,set_debug
+from helpers.utils import show_size
 from helpers.url_generater import generate_urls, get_url_index
 from helpers import downloaders
 from helpers import bilibili_info_extractor
@@ -74,6 +75,8 @@ def download(baseurl,
                 print("-"*40)
                 print("{} -> {}".format(url,file_name))
                 print("Split URL part: {}".format(len(info[0])))
+                if info[2]:
+                    print("Size: {}".format(show_size(info[2])))
                 print("-"*40)
                 print("")
 

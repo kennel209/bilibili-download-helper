@@ -63,6 +63,20 @@ def escape_seps(s):
     tmp = tmp.replace("\0","_")
     return tmp
 
+def show_size(size,rd=2,base2=True):
+    if base2:
+        s = 1024
+    else:
+        s = 1000
+    if size > s**3:
+        return "{} GB".format(round(size/(s**3),2))
+    elif size > 10 ** 6:
+        return "{} MB".format(round(size/(s**2),2))
+    elif size > 10 ** 3:
+        return "{} KB".format(round(size/(s),2))
+    else:
+        return "{} B".format(size)
+        
 def check_cmd(cli):
     u'''use subprocess to check cmd'''
     cmd = "which " + shlex.quote(cli)
