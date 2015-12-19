@@ -4,6 +4,8 @@
 import sys
 import os
 import subprocess
+import signal
+import time
 import shlex
 import random
 from .utils import check_cmd
@@ -58,7 +60,17 @@ class Aria2_Downloader(Downloader):
         debug("Downloading (aria2c) {}".format(cmd))
 
         try:
-            subprocess.check_call(args)
+            proc = subprocess.Popen(args)
+            return_code = proc.wait()
+            if return_code != 0:
+                raise subprocess.CalledProcessError(proc.returncode,proc.args)
+        except KeyboardInterrupt as err:
+            proc.send_signal(signal.SIGINT)
+            # wait for aria2 output
+            time.sleep(1)
+            print("\nKEYINTERRUPTED in Downloading {}".format(filenames))
+            print("Please Try again manually")
+            sys.exit(1)
         except subprocess.CalledProcessError as err:
             print(err)
             print("Some Error Occured in Downloading {}".format(filenames))

@@ -36,7 +36,6 @@ bilibili-download-helper
 TODO
 ------------
 
-* 修复int信号传递问题
 * 自动化重试N次
 * 片源选择（mp4 & size展示）
 * 更多格式转化
