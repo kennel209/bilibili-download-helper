@@ -6,7 +6,7 @@ bilibili-download-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
-:Version: 0.7
+:Version: 0.8-alpha
 :License: GPL 3
 
 这是什么？
@@ -24,6 +24,7 @@ bilibili-download-helper
 * 批量下载bilibili多P
 * 懒人自动模式，自动重命名，建立文件夹，下载全P（可选P）
 * 为了方便使用多线程下载（ aria2 ）预设5段5线程5并行任务(-x5 -s5 -j5)
+* aria2 多url下载优化
 * 对于某P多分段进行并行下载
 * 通过 -o DIR/NAME_ROOT 下载到其他目录
 * 默认使用原生api解析下载路径（效率高，使用youtube-dl的appkey）
@@ -35,8 +36,8 @@ bilibili-download-helper
 TODO
 ------------
 
+* 修复int信号传递问题
 * 自动化重试N次
-* aria2 多url下载优化
 * 片源选择（mp4 & size展示）
 * 更多格式转化
 

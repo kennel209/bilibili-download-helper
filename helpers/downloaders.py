@@ -5,6 +5,7 @@ import sys
 import os
 import subprocess
 import shlex
+import random
 from .utils import check_cmd
 from .utils import debug,set_debug
 
@@ -71,7 +72,10 @@ class Aria2_Downloader(Downloader):
         u'''write tempfile to generate filelist for aria2'''
         with open(temp_name, 'w') as out:
             for url,filename in zip(urls,filenames):
-                out.write(url)
+                if type(url) == type([]):
+                    out.write("\t".join(url))
+                else:
+                    out.write(url)
                 out.write('\n\t')
                 out.write('out='+filename)
                 out.write('\n')
@@ -91,6 +95,10 @@ class Wget_Downloader(Downloader):
 
         # 依次下载
         for url,filename in zip(urls,filenames):
+            if type(url) == type([]):
+                out.write(random.choice(url))
+            else:
+                out.write(url)
 
             cmd = " ".join(["wget",options,"-O"])
             cmd = " ".join([cmd,shlex.quote(filename),shlex.quote(url)])

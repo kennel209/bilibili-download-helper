@@ -7,7 +7,7 @@ import re
 import shlex
 import sys
 from functools import lru_cache # for memo
-from random import choice
+#from random import choice
 from .utils import check_cmd
 from .utils import debug,set_debug
 from .utils import get_url
@@ -147,7 +147,9 @@ def get_video_info(cids,prefer='flv',quality=4):
                         opt_urls.append(burl)
             # TODO: return muliturl
             #debug(opt_urls)
-            down_urls.append(choice(opt_urls))
+            #down_urls.append(choice(opt_urls))
+            # return multi url, optimize for aria2
+            down_urls.append(opt_urls)
             video_size += durl['size'] if 'size' in durl else durl.get('filesize',0)
         #debug(("cid :",cid,down_urls,video_format,video_size))
         res.append((down_urls,video_format,video_size))
