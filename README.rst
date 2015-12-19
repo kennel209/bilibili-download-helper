@@ -6,7 +6,7 @@ bilibili-download-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
-:Version: 0.8
+:Version: 0.9-alpha
 :License: GPL 3
 
 这是什么？
@@ -32,13 +32,12 @@ bilibili-download-helper
 * 通过 libav 支持合并多段（暂时支持合并flv）
 * 通过 libav 转化为mp4
 * 单线程也可使用wget
+* 下载自动化重试N次(默认N=3)
 
 TODO
 ------------
 
-* 自动化重试N次
 * 片源选择（mp4 & size展示）
-* 更多格式转化
 
 用法例子
 -----------

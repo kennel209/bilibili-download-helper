@@ -36,112 +36,140 @@ def download(baseurl,
 
     url_gen = generate_urls(baseurl,range_,start)
     for url in url_gen:
-        info = info_extract(url)
+        # FIXME: magic retry = 3
+        RETRY = 3
+        SUCC = False
+        while RETRY > 0 and SUCC == False:
+            # prevent overspeed
+            if not dry_run:
+                sleep(0.5)
 
-        # 根据不同情况生成文件名
-        ext = info[1]
-        index = get_url_index(url)
-        if index is None:
-            print("ERROR in extract INDEX, EXIT")
-            sys.exit(1)
+            info = info_extract(url)
 
-        if titles:
-            title_name = titles[int(index)-1]
+            # 根据不同情况生成文件名
+            ext = info[1]
+            index = get_url_index(url)
+            if index is None:
+                print("ERROR in extract INDEX, EXIT")
+                sys.exit(1)
 
-        if name_prefix == "":
-            filename = index
-        elif fixed_prefix:
-            filename = name_prefix
-        else:
             if titles:
-                filename = os.sep.join([name_prefix,title_name])
+                title_name = titles[int(index)-1]
+
+            if name_prefix == "":
+                filename = index
+            elif fixed_prefix:
+                filename = name_prefix
             else:
-                filename = "_".join([name_prefix,index])
+                if titles:
+                    filename = os.sep.join([name_prefix,title_name])
+                else:
+                    filename = "_".join([name_prefix,index])
 
-        file_name = ".".join([filename,ext])
+            file_name = ".".join([filename,ext])
 
-        # print INFO
-        print("-"*40)
-        print("{} -> {}".format(url,file_name))
-        print("Split URL part: {}".format(len(info[0])))
-        print("-"*40)
-        print("")
+            # FIXME: magic RETRY
+            if RETRY == 3:
+                # print INFO
+                print("-"*40)
+                print("{} -> {}".format(url,file_name))
+                print("Split URL part: {}".format(len(info[0])))
+                print("-"*40)
+                print("")
 
-        if len(info[0]) > 1:
-            # 多分段
+            if len(info[0]) > 1:
+                # 多分段
 
-            # check if file existed
-            # treat as downloaded
-            if to_ext != ext:
-                file_name = ".".join([filename,to_ext])
+                # check if file existed
+                # treat as downloaded
+                if to_ext != ext:
+                    file_name = ".".join([filename,to_ext])
 
-            if os.path.exists(file_name):
-                print("{} has downloaded, skip".format(file_name))
-                continue
-
-            parts=[]
-            for part,part_url in enumerate(info[0]):
-                part_index = "[{:02d}]".format(part)
-                part_name = ".".join([filename,part_index,ext])
-                parts.append(part_name)
-
-                debug("URL part: {} -> {}".format(part_index,part_name))
-
-            if dry_run:
-                continue
-
-            downloader.download(info[0],parts)
-
-            # POST process, merge & convert
-
-            print("Try Merging: {}".format(file_name))
-
-            result = video_process.merge_video(ext,parts,filename,to_ext)
-
-            # successful merged, delete parts_file
-            if result:
-                for f in parts:
-                    debug("removing {}".format(f))
-                    os.remove(f)
-
-        else:
-            # 单分段
-
-            # NOTE: file duplication leave to external_downloader
-            if dry_run:
-                continue
-
-            # support auto ext converter, check downloaded file
-            if to_ext != ext:
-                new_name = ".".join([filename,to_ext])
-                if os.path.exists(new_name):
-                    print("{} has downloaded, skip".format(new_name))
+                if os.path.exists(file_name):
+                    print("{} has downloaded, skip".format(file_name))
                     continue
 
-            downloader.download(info[0],[file_name])
+                parts=[]
+                for part,part_url in enumerate(info[0]):
+                    part_index = "[{:02d}]".format(part)
+                    part_name = ".".join([filename,part_index,ext])
+                    parts.append(part_name)
 
-            # POST process, convert
-            if to_ext != ext:
-                old_name = file_name
-                file_name = ".".join([filename,to_ext])
+                    debug("URL part: {} -> {}".format(part_index,part_name))
 
-                print("Try converting: {} -> {}".format(old_name,file_name))
+                if dry_run:
+                    SUCC = True
+                    continue
 
-                result = video_process.merge_video(ext,[old_name],filename,to_ext)
+                res = downloader.download(info[0],parts)
+                if not res:
+                    RETRY -= 1
+                    print("Retrying...{} Left".format(RETRY))
+                    continue
+                else:
+                    SUCC = True
 
-                # successful converted
+                # POST process, merge & convert
+
+                print("Try Merging: {}".format(file_name))
+
+                result = video_process.merge_video(ext,parts,filename,to_ext)
+
+                # successful merged, delete parts_file
                 if result:
-                    debug("removing {}".format(old_name))
-                    os.remove(old_name)
+                    for f in parts:
+                        debug("removing {}".format(f))
+                        os.remove(f)
 
-        # print INFO
-        print("")
-        print("-"*40)
-        print("Done: {}".format(file_name))
-        print("-"*40)
-        print("")
-        # prevent overspeed
-        sleep(1)
+            else:
+                # 单分段
+
+                # NOTE: file duplication leave to external_downloader
+                if dry_run:
+                    SUCC = True
+                    continue
+
+                # support auto ext converter, check downloaded file
+                if to_ext != ext:
+                    new_name = ".".join([filename,to_ext])
+                    if os.path.exists(new_name):
+                        print("{} has downloaded, skip".format(new_name))
+                        continue
+
+                res = downloader.download(info[0],[file_name])
+                if not res:
+                    RETRY -= 1
+                    print("Retrying...{} Left".format(RETRY))
+                    continue
+                else:
+                    SUCC = True
+
+                # POST process, convert
+                if to_ext != ext:
+                    old_name = file_name
+                    file_name = ".".join([filename,to_ext])
+
+                    print("Try converting: {} -> {}".format(old_name,file_name))
+
+                    result = video_process.merge_video(ext,[old_name],filename,to_ext)
+
+                    # successful converted
+                    if result:
+                        debug("removing {}".format(old_name))
+                        os.remove(old_name)
+
+            # print INFO
+            print("")
+            print("-"*40)
+            print("Done: {}".format(file_name))
+            print("-"*40)
+            print("")
+
+        if SUCC == False:
+            # TODO: auto skip?
+            print("Retry used up. Please retry manully")
+            sys.exit(1)
+
 
 def do_work(args):
     u'''分配命令，调用下载主函数'''

@@ -31,6 +31,7 @@ class Fake_Downloader(Downloader):
     def download(urls, filenames):
         for u,f in zip(urls,filenames):
             print("Downloading (fake) {}, save as {} ".format(u,f))
+        return True
 
 class Aria2_Downloader(Downloader):
     u'''aria2下载器，通过subprocess模块调用'''
@@ -74,10 +75,11 @@ class Aria2_Downloader(Downloader):
         except subprocess.CalledProcessError as err:
             print(err)
             print("Some Error Occured in Downloading {}".format(filenames))
-            print("Please Try again manually")
-            sys.exit(1)
+            #print("Please Try again manually")
+            return False
         finally:
             os.remove(input_file)
+        return True
 
     @staticmethod
     def make_input_file(urls, filenames, temp_name='temp.input'):
@@ -122,7 +124,8 @@ class Wget_Downloader(Downloader):
                 print(err)
                 print("Some Error Occured in Downloading {}".format(filename))
                 print("Please Try again manually")
-                sys.exit(1)
+                return False
+        return True
 
 DOWNLOADERS={"fake":Fake_Downloader,
             "aria2":Aria2_Downloader,
