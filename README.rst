@@ -6,7 +6,7 @@ bilibili-download-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
-:Version: 0.8-alpha
+:Version: 0.8
 :License: GPL 3
 
 这是什么？
