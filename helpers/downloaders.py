@@ -96,9 +96,8 @@ class Wget_Downloader(Downloader):
         # 依次下载
         for url,filename in zip(urls,filenames):
             if type(url) == type([]):
-                out.write(random.choice(url))
-            else:
-                out.write(url)
+                # just choose one to download
+                url = random.choice(url)
 
             cmd = " ".join(["wget",options,"-O"])
             cmd = " ".join([cmd,shlex.quote(filename),shlex.quote(url)])
