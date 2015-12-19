@@ -21,6 +21,7 @@ def download(baseurl,
             info_extract=None,
             downloader=None,
             dry_run=False,
+            src_format='flv',
             to_ext='mp4',
             titles=False,
             retry_time=3):
@@ -45,7 +46,7 @@ def download(baseurl,
             # prevent overspeed
             sleep(0.5)
 
-            info = info_extract(url)
+            info = info_extract(url,src_format)
 
             # 根据不同情况生成文件名
             ext = info[1]
@@ -218,6 +219,7 @@ def do_work(args):
                 info_extract=extractor,
                 downloader=downloader,
                 dry_run=args.dry_run,
+                src_format=args.src_format,
                 to_ext=args.to_ext,
                 titles=pages,
                 retry_time=args.retry)
@@ -231,6 +233,7 @@ def do_work(args):
                 info_extract=extractor,
                 downloader=downloader,
                 dry_run=args.dry_run,
+                src_format=args.src_format,
                 to_ext=args.to_ext,
                 retry_time=args.retry)
 
@@ -258,6 +261,9 @@ def main():
     parser.add_argument("-o","--prefix",
                         default="",
                         help="output filename prefix")
+    parser.add_argument("-g","--src-format",
+                        default="flv",
+                        help="prefer src format, may NOT work, ONLY FOR native backend, default flv, [flv, mp4]")
     parser.add_argument("-t","--to-ext",
                         default="mp4",
                         help="output file extension, auto converted, default mp4")

@@ -13,7 +13,7 @@ DEBUG=False
 if not check_cmd('youtube-dl'):
     raise ImportError("Cannot found youtube-dl in Path")
 
-def handler(url):
+def handler(url,src=None):
     u'''打包处理函数'''
     data = handler_command(url)
     info = extract_urls(data)

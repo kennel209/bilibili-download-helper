@@ -6,13 +6,13 @@ bilibili-download-helper
 
 :Author: Eric Cai
 :Contact: kennel209@gmail.com
-:Version: 0.9-alpha
+:Version: 0.9-beta
 :License: GPL 3
 
 这是什么？
 ============
 
-只是一个使用 ``aria2`` 加速下载bilibli视频的包装器。
+只是一个通过Bilibili API，使用 ``aria2`` 加速下载bilibli视频的包装器。
 
 为了支持分段合并转化，你同样需要 ``ffmpeg`` 或者 ``avconv`` 来使用这个脚本。(可选，不然就是一堆flv)
 
@@ -22,22 +22,23 @@ bilibili-download-helper
 ------------
 
 * 批量下载bilibili多P
-* 懒人自动模式，自动重命名，建立文件夹，下载全P（可选P）
-* 为了方便使用多线程下载（ aria2 ）预设5段5线程5并行任务(-x5 -s5 -j5)
-* aria2 多url下载优化
-* 对于某P多分段进行并行下载
-* 通过 -o DIR/NAME_ROOT 下载到其他目录
-* 默认使用原生api解析下载路径（效率高，使用youtube-dl的appkey）
-* 支持使用 youtube-dl 或者 you-get 解析下载路径, 可以使用-b 切换
-* 通过 libav 支持合并多段（暂时支持合并flv）
-* 通过 libav 转化为mp4
-* 单线程也可使用wget
-* 下载自动化重试N次(默认N=3)
+* 懒人自动模式，自动重命名，建立文件夹，下载全P(可选P，通过 -s Start -i Range 选择)
+* 为了方便使用多线程下载(aria2), 预设5段5线程5并行任务(-x5 -s5 -j5)
+* aria2 多url下载优化 **仅使用aria2有效**
+* 对于某P多分段进行并行下载 **仅使用aria2有效**
+* 通过 -o DIR/NAME_ROOT 下载到其他目录 (自动模式忽略该参数)
+* 默认使用原生api解析下载路径 (效率高，使用youtube-dl的appkey)
+* 支持使用 youtube-dl 或者 you-get 解析下载路径, 可以使用-b 切换 (-b youtube-dl)
+* 通过 libav 支持合并多段， (flv -> flv, flv -> mp4, mp4 -> mp4)
+* 通过 libav 转化为mp4(默认), 可选flv (--to-ext mp4)
+* 单线程也可使用wget (-d wget)
+* 下载自动化重试N次，默认N=3 (--retry 3)
+* 片源选择，默认flv，可选mp4 (--src-format mp4) **仅native解析器有效**
 
 TODO
 ------------
 
-* 片源选择（mp4 & size展示）
+* 重构
 
 用法例子
 -----------
@@ -92,8 +93,9 @@ TODO
     $ ./bilibili_download_helper.py -h
 
     usage: bilibili_download_helper.py [-h] [-a] [-f] [-i RANGE] [-s START]
-                                       [-o PREFIX] [-t TO_EXT] [-d DOWNLOADER]
-                                       [-n] [-b BACKEND] [-v]
+                                       [-o PREFIX] [-g SRC_FORMAT] [-t TO_EXT]
+                                       [-d DOWNLOADER] [-n] [-b BACKEND]
+                                       [-r RETRY] [-v]
                                        baseurl
 
     A small script to help downloading Bilibily video via you-get & aria2
@@ -113,6 +115,9 @@ TODO
                             start point, int, Default: +1
       -o PREFIX, --prefix PREFIX
                             output filename prefix
+      -g SRC_FORMAT, --src-format SRC_FORMAT
+                            prefer src format, may NOT work, ONLY FOR native
+                            backend, default flv, [flv, mp4]
       -t TO_EXT, --to-ext TO_EXT
                             output file extension, auto converted, default mp4
       -d DOWNLOADER, --downloader DOWNLOADER

@@ -173,7 +173,7 @@ def check_download_url(url,video='flv',quality=0):
             return 'lmp4'
     return False
 
-def handler(url,method='av_info'):
+def handler(url,src='flv',method='av_info'):
     u'''打包处理函数'''
     aid,page = get_aid_by_url(url)
     if method == 'av_info':
@@ -183,9 +183,9 @@ def handler(url,method='av_info'):
         page_info = get_pages_info_by_pagelist(aid)
         cids = get_cid_by_page_info(page_info,page)
     debug("cid is {}".format(cids))
-    info = get_video_info(cids,'flv','4')
+    info = get_video_info(cids,src,'4')
     debug(info)
-    # TODO: cid list
+    # TODO: cid list, now assume only one page
     return info[0]
 
 if __name__=="__main__":

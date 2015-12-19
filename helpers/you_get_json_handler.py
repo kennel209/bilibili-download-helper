@@ -14,7 +14,7 @@ DEBUG=False
 if not check_cmd('you-get'):
     raise ImportError("Cannot found you-get in Path")
 
-def handler(url):
+def handler(url,src=None):
     u'''打包处理函数'''
     data = handler_command(url)
     obj = handler_json(data)
