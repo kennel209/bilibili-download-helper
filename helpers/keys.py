@@ -15,8 +15,6 @@ if os.path.isfile(conf):
         for l in f:
             APPKEYS.append(l.strip())
 
-print(APPKEYS)
-
 # you-get
 #APPKEY = '85eb6835b0a1034e',
 #APPSEC = '2ad42749773c441109bdc0191257a664'

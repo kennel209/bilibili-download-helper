@@ -54,6 +54,7 @@ def get_av_full_info(aid):
     # get info by aid and page
     #JSON_API = "http://api.bilibili.com/view?type=json&appkey="+APPKEY+"&id={}&page={}"
     # get info by aid only
+    debug("APPKEY: "+APPKEY)
     JSON_ALL_API = "http://api.bilibili.com/view?type=json&appkey="+APPKEY+"&id={}&batch=1"
 
     #if page is not None:
