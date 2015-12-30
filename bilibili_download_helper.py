@@ -130,6 +130,14 @@ def download(baseurl,
                 # 单分段
 
                 # NOTE: file duplication leave to external_downloader
+
+                # FIXME: No parts?
+                if len(info[0]) == 0:
+                    print("No urls found")
+                    RETRY -= 1
+                    print("Retrying...{} Left".format(RETRY))
+                    continue
+
                 if dry_run:
                     SUCC = True
                     continue

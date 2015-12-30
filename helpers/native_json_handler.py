@@ -135,7 +135,13 @@ def get_video_info(cids,prefer='flv',quality=4):
         video_info_dict = get_video_info_by_cid(cid,prefer,quality)
         down_urls = []
         video_size = 0
-        for durl in video_info_dict['durl']:
+        if isinstance(video_info_dict['durl'],list):
+            durls = video_info_dict['durl']
+        elif isinstance(video_info_dict['durl'],dict):
+            durls = [video_info_dict['durl']]
+        else:
+            print("Cannot find downurl for cid {}".format(cid))
+        for durl in durls:
             opt_urls=[]
             # FIXME: NEED Check ?
             opt_urls.append(durl['url'])
