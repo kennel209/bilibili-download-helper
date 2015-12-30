@@ -91,6 +91,7 @@ def download(baseurl,
 
                 if os.path.exists(file_name):
                     print("{} has downloaded, skip".format(file_name))
+                    SUCC = True
                     continue
 
                 parts=[]
@@ -138,6 +139,7 @@ def download(baseurl,
                     new_name = ".".join([filename,to_ext])
                     if os.path.exists(new_name):
                         print("{} has downloaded, skip".format(new_name))
+                        SUCC = True
                         continue
 
                 res = downloader.download(info[0],[file_name])
