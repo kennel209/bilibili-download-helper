@@ -52,7 +52,7 @@ class Aria2_Downloader(Downloader):
 
         # 创建并行任务 input_file
         input_file = Aria2_Downloader.make_input_file(urls,filenames,
-                        temp_name=os.path.basename(filenames[0])+".input")
+                        temp_name="."+os.path.basename(filenames[0])+".input")
 
         cmd = " ".join(["aria2c",options,"-i"])
         cmd = " ".join([cmd,shlex.quote(input_file)])
@@ -68,7 +68,7 @@ class Aria2_Downloader(Downloader):
         except KeyboardInterrupt as err:
             proc.send_signal(signal.SIGINT)
             # wait for aria2 output
-            time.sleep(1)
+            time.sleep(2)
             print("\nKEYINTERRUPTED in Downloading {}".format(filenames))
             print("Please Try again manually")
             sys.exit(1)

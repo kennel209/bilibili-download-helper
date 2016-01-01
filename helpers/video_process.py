@@ -37,7 +37,7 @@ def merge_flv(cli,video_parts,output,to_ext='flv'):
     # NOTE: ffmpeg require concat input file to be in top directory
     #       use basename to remove any os separator
     # FIXME: escape ":" ?
-    tempfile = make_merge_filelist(video_parts,os.path.basename(output).replace(":","_")+".merge")
+    tempfile = make_merge_filelist(video_parts,"."+os.path.basename(output).replace(":","_")+".merge")
     output = ".".join([output,to_ext])
 
     cmd =  " ".join([cli,

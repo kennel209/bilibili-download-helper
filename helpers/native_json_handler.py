@@ -143,20 +143,26 @@ def get_video_info(cids,prefer='flv',quality=4):
             print("Cannot find downurl for cid {}".format(cid))
         for durl in durls:
             opt_urls=[]
-            # FIXME: NEED Check ?
-            opt_urls.append(durl['url'])
+            # bilibilbi cannot always return the perfer format, check and show error
+            best_url = durl['url']
+            fmt = check_download_url(best_url,prefer,quality)
+            if fmt:
+                opt_urls.append(best_url)
+            else:
+                print("Src Format Not Matched, Try later?\n. URL={}".format(best_url)) 
             if 'backup_url' in durl:
                 for burl in durl['backup_url']:
-                    fmt = check_download_url(burl,prefer)
-                    if fmt and fmt == prefer:
-                        opt_urls.append(burl)
-                    elif fmt and fmt == 'lmp4' and quality==0:
+                    fmt = check_download_url(burl,prefer,quality)
+                    if fmt:
                         opt_urls.append(burl)
             # TODO: return muliturl
             #debug(opt_urls)
             #down_urls.append(choice(opt_urls))
             # return multi url, optimize for aria2
-            down_urls.append(opt_urls)
+            if opt_urls:
+                down_urls.append(opt_urls)
+            else:
+                print("No URLs for cid {}".format(cid))
             video_size += durl['size'] if 'size' in durl else durl.get('filesize',0)
         #debug(("cid :",cid,down_urls,video_format,video_size))
         res.append((down_urls,video_format,video_size))
@@ -167,17 +173,17 @@ def check_download_url(url,video='flv',quality=0):
     # FIXME: UGLY
     if video == 'flv':
         if '.flv' in url:
-            return video
+            return url
         if '.hlv' in url:
-            return video
+            return url
         if 'flash' in url:
-            return video
+            return url
     elif video == 'mp4':
-        if 'hd.mp4' in url:
-            return 'mp4'
+        if 'hd.mp4' in url and quality > 1:
+            return url
         if '.mp4' in url:
-            return 'lmp4'
-    return False
+            return url
+    return None
 
 def handler(url,src='flv',method='av_info'):
     u'''打包处理函数'''
