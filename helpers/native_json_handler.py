@@ -149,7 +149,7 @@ def get_video_info(cids,prefer='flv',quality=4):
             if fmt:
                 opt_urls.append(best_url)
             else:
-                print("Src Format Not Matched, Try later?\n. URL={}".format(best_url)) 
+                print("Src Format Not Matched, Try later?.\nURL={}".format(best_url)) 
             if 'backup_url' in durl:
                 for burl in durl['backup_url']:
                     fmt = check_download_url(burl,prefer,quality)

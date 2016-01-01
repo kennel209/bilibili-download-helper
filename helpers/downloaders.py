@@ -68,7 +68,7 @@ class Aria2_Downloader(Downloader):
         except KeyboardInterrupt as err:
             proc.send_signal(signal.SIGINT)
             # wait for aria2 output
-            time.sleep(2)
+            time.sleep(3)
             print("\nKEYINTERRUPTED in Downloading {}".format(filenames))
             print("Please Try again manually")
             sys.exit(1)
